@@ -78,7 +78,7 @@ export const Post = ({
       </Box>
       <Box style={{margin: "1rem 0"}}>
       <Typography variant="h5" color="text.secondary" >
-          {text}
+          {title}
         </Typography>
       </Box>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
