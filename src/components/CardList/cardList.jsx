@@ -1,8 +1,7 @@
 import Card from "../Card/card";
 import "./index.css";
 
-const CardList = ({ posts, onPostLike, currentUser }) => {
-
+const CardList = ({ posts, onPostLike, onPostDelete, currentUser }) => {
   return (
     <div className="cards">
       {posts &&
@@ -12,6 +11,7 @@ const CardList = ({ posts, onPostLike, currentUser }) => {
             {...item}
             post={item}
             onPostLike={onPostLike}
+            onPostDelete={onPostDelete}
             currentUser={currentUser}
           />
         ))}

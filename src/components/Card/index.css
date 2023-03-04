@@ -157,3 +157,9 @@
 	background-color: #01A54E;
 	color: #FFFFFF;
 }
+
+.card__buttons {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+}

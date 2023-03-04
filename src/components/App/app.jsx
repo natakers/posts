@@ -8,14 +8,17 @@ import api from "../../Api";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState({});
+  const [isLoading, setLoading] = useState(true);
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
+    setLoading(true)
     api.getUserInfo().then((userData) => {
       setCurrentUser(userData);
     });
     api.getPostList().then((poststData) => {
       setCards(poststData);
+      setLoading(false)
     });
   }, []);
 
@@ -29,14 +32,25 @@ const App = () => {
     });
   }
 
+  function handlePostDelete(post) {
+    api.deletePost(post._id).then((res) => {}).then(() => {
+      api.getPostList().then((poststData) => {
+        setCards(poststData);
+      });
+    }
+    );
+    
+  }
+
   return (
     <>
       <Header user={currentUser}></Header>
       <main className="content container">
-        {cards && cards.length > 0 ? (
+        {!isLoading && cards && cards.length > 0 ? (
           <CardList
             posts={cards}
             onPostLike={handlePostLike}
+            onPostDelete={handlePostDelete}
             currentUser={currentUser}
           />
         ) : (

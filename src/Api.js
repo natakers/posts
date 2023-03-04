@@ -36,6 +36,15 @@ class Api {
     }).then(onResponce);
   }
 
+  deletePost(postID) {
+    return fetch(`${this._baseUrl}/posts/${postID}`, {
+      method: "DELETE",
+      headers: {
+        authorization: this._token,
+      },
+    }).then(onResponce);
+  }
+
 
 }
 
