@@ -16,7 +16,27 @@ class Api {
 			},
 		}).then(onResponce);
 	}
-	
+
+  getPostList() {
+    return fetch(`${this._baseUrl}/posts`, {
+      headers: {
+        authorization: this._token,
+      },
+    }).then(onResponce);
+  }
+
+  changeLikePostStatus(postID, like) {
+    // Обычная реализация: 2 разных метода для удаления и постановки лайка.
+    return fetch(`${this._baseUrl}/posts/likes/${postID}`, {
+      method: like ? "PUT" : "DELETE",
+      headers: {
+        authorization: this._token,
+        "Content-Type": "application/json",
+      },
+    }).then(onResponce);
+  }
+
+
 }
 
 
