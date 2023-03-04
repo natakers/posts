@@ -6,6 +6,7 @@ import moment from "moment";
 import "moment/locale/ru";
 import { useState } from "react";
 import api from "../../Api";
+import Button from "@mui/material/Button";
 
 const Comment = ({ comment }) => {
   const [author, setAuthor] = useState(null);
@@ -29,7 +30,18 @@ const Comment = ({ comment }) => {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "0.5rem 0",
+        border: "1px solid #A0A0A4",
+        width: { xs: "100%", md: "50%" },
+        padding: "0.5rem",
+        borderRadius: "0.5rem",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box sx={{ display: "flex" }}>
       {author && (
         <Tooltip title="Open settings">
           <Avatar sx={{ mr: 1 }} alt="avatar" src={author.avatar} />
@@ -38,12 +50,24 @@ const Comment = ({ comment }) => {
 
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Typography variant="body2" color="text.secondary">
-          {moment(comment.updated_at).format("LL")}
+          {moment(comment.updated_at).format("hh:mm:ss DD-MM:YYYY")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {comment.text}
         </Typography>
       </Box>
+      </Box>
+      <Button
+        // onClick={handleClickButtonEdit}
+        variant="contained"
+        sx={{
+          backgroundColor: "#f0e2d5",
+          color: "#013f4e",
+          ":hover": { bgcolor: "#58641a", color: "white" },
+        }}
+      >
+        del
+      </Button>
     </Box>
   );
 };

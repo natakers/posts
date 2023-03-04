@@ -6,9 +6,25 @@ import TextField from "@mui/material/TextField";
 import "moment/locale/ru";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
+import { PostContext } from "../../context/postContext";
+import { useState } from "react";
+import api from "../../Api";
 
-const NewComment = () => {
+const NewComment = ({setCommentsLocal, }) => {
   const { user: currentUser } = useContext(UserContext);
+  const { currentPost } = useContext(PostContext);
+  const [comment, setComment] = useState('');
+
+  const handleClickAdd = async () => {
+    try {
+      let result = await api.postComment(currentPost, comment);
+      setCommentsLocal(result.comments.reverse())
+      setComment('')
+    } catch (error) {
+      alert(error);
+    }
+    
+  }
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start" }}>
       <Tooltip title="Open settings">
@@ -18,16 +34,14 @@ const NewComment = () => {
         sx={{ mb: 2 }}
         placeholder="Текст поста"
         multiline
-        // rows={2}
         maxRows={4}
-        // slotProps={{
-        //   textarea: {
-        //     id: "text",
-        //   },
-        // }}
+        value={comment}
+        onInput={(e) => {
+          setComment(e.target.value);
+        }}
       />
       <Button
-        // onClick={handleClickButtonEdit}
+        onClick={handleClickAdd}
         variant="contained"
         sx={{
           backgroundColor: "#00718f",

@@ -75,7 +75,29 @@ class Api {
 			},
 		}).then(onResponce);
 	}
+
+  getComments(id) {
+		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
+			headers: {
+				authorization: this._token,
+			},
+		}).then(onResponce);
+	}
+
+  postComment(id, text) {
+		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
+      method: "POST",
+			headers: {
+				authorization: this._token,
+        "Content-Type": "application/json",
+			},
+      body: JSON.stringify({
+        text
+      }),
+		}).then(onResponce);
+	}
 }
+
 
 
 const config = {

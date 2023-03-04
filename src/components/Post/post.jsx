@@ -37,6 +37,7 @@ export const Post = ({
   const { handleOpen } = useContext(ModalContext);
   const liked = isLiked(likes, currentUser?._id);
   const [like, setLike] = useState(liked);
+  const [commentsLocal, setCommentsLocal] = useState(comments.reverse());
 
   function handleLikeClick(e) {
     e.stopPropagation();
@@ -110,10 +111,10 @@ export const Post = ({
         <Typography variant="body2" color="text.secondary">
           Комментарии
         </Typography>
-        <NewComment/>
+        <NewComment setCommentsLocal={setCommentsLocal} />
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {comments &&
-            comments.map((comment) => (
+          {commentsLocal &&
+            commentsLocal.map((comment) => (
               <Comment key={comment._id} comment={comment}/>
             ))}
         </Box>
