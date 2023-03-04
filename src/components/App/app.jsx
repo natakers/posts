@@ -14,7 +14,7 @@ import { PostContext } from "../../context/postContecst";
 
 const App = () => {
   console.log("app");
-
+  
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [cards, setCards] = useState([]);
@@ -49,8 +49,8 @@ const App = () => {
   function handlePostDelete(post) {
     setLoading(true)
     api.deletePost(post._id).then((res) => {
-      api.getPostList().then((poststData) => {
-        setCards(poststData);
+    api.getPostList().then((poststData) => {
+      setCards(poststData);
       setLoading(false)
       });
     });
@@ -63,45 +63,45 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{ user: currentUser, isLoading }}>
-      <PostContext.Provider value={{ handlePostLike, handlePostDelete,  }}>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-            height: "100vh",
-          }}
-        >
+      <PostContext.Provider value={{ handlePostLike, handlePostDelete }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: 1,
+        height: "100vh",
+      }}
+    >
           {currentUser && (
             <Header user={currentUser} onUpdateUser={handleUpdateUser}></Header>
           )}
           <Container
             sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
           >
-            <Routes>
-              <Route
-                index
-                element={
+        <Routes>
+          <Route
+            index
+            element={
                   <MainPage
                     cards={cards}
                     onChangeSort={onChangeSort}
                     currentSort={currentSort}
                   />
-                }
-              />
-              <Route
-                path="/post/:postId"
-                element={
-                  <PostPage/>
-                }
-              />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Container>
-          <Footer />
-        </Box>
-      </PostContext.Provider>
+            }
+          />
+          <Route
+            path="/post/:postId"
+            element={
+              <PostPage/>
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Container>
+      <Footer />
+    </Box>
+    </PostContext.Provider>
     </UserContext.Provider>
   );
 };

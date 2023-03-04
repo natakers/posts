@@ -1,21 +1,21 @@
 const onResponce = (res) => {
   console.log(res);
-	return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 };
 
 class Api {
-	constructor({ baseUrl, token }) {
-		this._token = `Bearer ${token}`;
-		this._baseUrl = baseUrl;
-	}
+  constructor({ baseUrl, token }) {
+    this._token = `Bearer ${token}`;
+    this._baseUrl = baseUrl;
+  }
 
-	getUserInfo() {
-		return fetch(`${this._baseUrl}/users/me`, {
-			headers: {
-				authorization: this._token,
-			},
-		}).then(onResponce);
-	}
+  getUserInfo() {
+    return fetch(`${this._baseUrl}/users/me`, {
+      headers: {
+        authorization: this._token,
+      },
+    }).then(onResponce);
+  }
 
   getPostList() {
     return fetch(`${this._baseUrl}/posts`, {
@@ -61,13 +61,20 @@ class Api {
 
   getPostById(postId) {
     return fetch(`${this._baseUrl}/posts/${postId}`, {
-        headers: {
-          authorization: this._token,
-          "Content-Type": "application/json",
+      headers: {
+        authorization: this._token,
+        "Content-Type": "application/json",
         }
     }).then(onResponce)
-}
+  }
 
+  getUser(id) {
+		return fetch(`${this._baseUrl}/users/${id}`, {
+			headers: {
+				authorization: this._token,
+			},
+		}).then(onResponce);
+	}
 }
 
 

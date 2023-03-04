@@ -1,11 +1,13 @@
-import Box from "@mui/material/Box";
 import React, { memo } from "react";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
+import Box from "@mui/material/Box";
 import { tabs } from "../../utils";
 import { grey } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 const color = grey[500];
+
 const theme1 = createTheme({
   status: {
     danger: color,
@@ -22,6 +24,7 @@ const theme1 = createTheme({
     },
   },
 });
+
 const Sort = memo(({ onChangeSort }) => {
   console.log("sort");
   const [alignment, setAlignment] = React.useState("По дате");
@@ -33,21 +36,19 @@ const Sort = memo(({ onChangeSort }) => {
   };
   return (
     <ThemeProvider theme={theme1}>
-      <Box sx={{ mb: 2 }}>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment}
-          exclusive
-          onChange={handleChange}
-          aria-label="text button group"
-        >
-          {tabs.map((tab) => (
-            <ToggleButton key={tab.id} value={tab.title}>
-              {tab.title}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </Box>
+      <ToggleButtonGroup
+        color="primary"
+        value={alignment}
+        exclusive
+        onChange={handleChange}
+        aria-label="text button group"
+      >
+        {tabs.map((tab) => (
+          <ToggleButton key={tab.id} value={tab.title}>
+            {tab.title}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
     </ThemeProvider>
   );
 });

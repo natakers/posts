@@ -1,3 +1,7 @@
+
+import Comment from "../Comment/comment";
+import ModalConfirm from "../Modal/ModalConfirm";
+import NewComment from "../NewComment/newComment";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import CardMedia from "@mui/material/CardMedia";
@@ -8,7 +12,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import moment from "moment";
 import "moment/locale/ru";
-import ModalConfirm from "../Modal/ModalConfirm";
 import { isLiked } from "../../utils";
 import { useState } from "react";
 import { useContext } from 'react';
@@ -24,6 +27,8 @@ export const Post = ({
   author,
   likes,
   created_at,
+  comments,
+  _id,
 }) => {
   const { handlePostLike: onPostLike } =
     useContext(PostContext);
@@ -38,6 +43,9 @@ export const Post = ({
     onPostLike(post);
     setLike(!like)
   }
+
+
+  console.log("post");
 
   return (
     <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
@@ -78,7 +86,7 @@ export const Post = ({
       </Box>
       <Box style={{margin: "1rem 0"}}>
       <Typography variant="h5" color="text.secondary" >
-          {text}
+          {title}
         </Typography>
       </Box>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -87,6 +95,19 @@ export const Post = ({
           {text}
         </Typography>
       </Stack>
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          Комментарии
+        </Typography>
+        <NewComment/>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          {comments &&
+            comments.map((comment) => (
+              <Comment key={comment._id} comment={comment}/>
+            ))}
+        </Box>
+      </Box>
+      
     </Box>
   );
 };

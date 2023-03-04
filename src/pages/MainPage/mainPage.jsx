@@ -1,8 +1,10 @@
 import CardList from "../../components/CardList/cardList";
 import Spinner from "../../components/Spinner";
 import Sort from "../../components/Sort/sort";
-import { useContext } from 'react';
-import { UserContext } from '../../context/userContext';
+import ModalAdd from "../../components/Modal/ModalAdd";
+import Box from "@mui/material/Box";
+import { useContext } from "react";
+import { UserContext } from "../../context/userContext";
 
 export const MainPage = ({ cards, onChangeSort, currentSort }) => {
   console.log("main");
@@ -33,13 +35,22 @@ export const MainPage = ({ cards, onChangeSort, currentSort }) => {
     });
   }
   if (currentSort === "Популярные") {
-    console.log(cards);
     cards = cards.sort((item, item1) => item1.likes.length - item.likes.length);
   }
   console.log(cards);
   return (
     <>
-      <Sort onChangeSort={onChangeSort} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Sort onChangeSort={onChangeSort} />
+        <ModalAdd />
+      </Box>
+
       {!isLoading && cards && cards.length > 0 ? (
         <CardList posts={cards} currentUser={currentUser} />
       ) : (
