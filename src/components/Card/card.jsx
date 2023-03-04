@@ -12,6 +12,8 @@ import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import moment from "moment";
 import "moment/locale/ru";
 import ModalConfirm from "../Modal/ModalConfirm";
+import { Link } from "react-router-dom";
+import './index.css'
 
 const PostCard = ({
   post,
@@ -36,25 +38,27 @@ const PostCard = ({
 
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardHeader
-        avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
-        title={title}
-        subheader={moment(created_at).format("LL")}
-      />
+      <Link to={`/post/${_id}`} className="card__link">
+        <CardHeader
+          avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
+          title={title}
+          subheader={moment(created_at).format("LL")}
+        />
       <CardMedia component="img" height="194" image={image} alt="Paella dish" />
-      <CardContent>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {text}
-        </Typography>
-      </CardContent>
+        <CardContent>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {text}
+          </Typography>
+        </CardContent>
+      </Link>
       <CardActions disableSpacing sx={{ justifyContent: "space-between" }}>
         <IconButton
           aria-label="add to favorites"

@@ -5,12 +5,15 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Delete from "@mui/icons-material/Delete";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ModalConfirm = ({ post, onPostDelete }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  let location = useLocation()
+  const navigate = useNavigate()
   const style = {
     position: "absolute",
     top: "50%",
@@ -30,6 +33,9 @@ const ModalConfirm = ({ post, onPostDelete }) => {
     e.stopPropagation();
     onPostDelete(post);
     handleClose();
+    if (post._id === location.pathname.split('/').reverse()[0]) {
+      navigate(-1)
+    }
   }
   return (
     <>

@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Footer from "../Footer/footer";
 import Header from "../Header/header";
-import CardList from "../CardList/cardList";
-import Spinner from "../Spinner/index";
 import "./index.css";
 import api from "../../Api";
-import Container from "@mui/material/Container";
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import { Routes, Route } from "react-router-dom";
+import NotFoundPage from "../../pages/NotFoundPage/not-found-page";
+import PostPage from "../../pages/PostPage/postPage";
+import { MainPage } from "../../pages/MainPage/mainPage";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState({});
@@ -40,30 +43,38 @@ const App = () => {
   }
 
   function handlePostDelete(post) {
+    setLoading(true)
     api.deletePost(post._id).then((res) => {
-      api.getPostList().then((poststData) => {
-        setCards(poststData);
-      });
+    api.getPostList().then((poststData) => {
+      setCards(poststData);
+      setLoading(false)
+    });
     });
   }
 
   return (
-    <>
+    <Box sx={{width: "100%", display: "flex", flexDirection: "column", flexGrow: 1, height: "100vh"}}>
       <Header user={currentUser} onUpdateUser={handleUpdateUser}></Header>
-      <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
-        {!isLoading && cards && cards.length > 0 ? (
-          <CardList
-            posts={cards}
+      <Container sx={{marginTop: "20px", marginBottom: "20px", flexGrow: 1}}>
+        <Routes>
+          <Route index element={
+            <MainPage 
+            cards={cards} 
             onPostLike={handlePostLike}
             onPostDelete={handlePostDelete}
             currentUser={currentUser}
-          />
-        ) : (
-          <Spinner />
-        )}
+            isLoading={isLoading}/>
+          }/>
+          <Route path="/post/:postId" element={
+            <PostPage currentUser={currentUser} onPostDelete={handlePostDelete} onPostLike={handlePostLike}/>
+          }/>
+          <Route path="*" element={
+            <NotFoundPage/>
+          }/>
+        </Routes>
       </Container>
       <Footer />
-    </>
+    </Box>
   );
 };
 
