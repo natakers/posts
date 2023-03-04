@@ -1,17 +1,16 @@
+import { useContext } from "react";
 import CardList from "../../components/CardList/cardList";
 import Spinner from "../../components/Spinner";
 import Sort from "../../components/Sort/sort";
-import ModalAdd from "../../components/Modal/ModalAdd";
 import Box from "@mui/material/Box";
-import { useContext } from "react";
+import Button from "@mui/material/Button";
+import { ModalContext } from "../../context/modalContext";
 import { UserContext } from "../../context/userContext";
 
 export const MainPage = ({ cards, onChangeSort, currentSort }) => {
   console.log("main");
-  console.log(currentSort);
-
   const { currentUser, isLoading } = useContext(UserContext);
-
+  const { handleOpen } = useContext(ModalContext);
   if (currentSort === "По дате") {
     cards = cards.sort((item, item1) => {
       if (item1.created_at.toLowerCase() < item.created_at.toLowerCase()) {
@@ -37,7 +36,7 @@ export const MainPage = ({ cards, onChangeSort, currentSort }) => {
   if (currentSort === "Популярные") {
     cards = cards.sort((item, item1) => item1.likes.length - item.likes.length);
   }
-  console.log(cards);
+
   return (
     <>
       <Box
@@ -48,7 +47,17 @@ export const MainPage = ({ cards, onChangeSort, currentSort }) => {
         }}
       >
         <Sort onChangeSort={onChangeSort} />
-        <ModalAdd />
+        <Button
+        onClick={() => handleOpen('add_post')}
+        variant="contained"
+        sx={{
+          backgroundColor: "#00718f",
+          marginLeft: "20px",
+          ":hover": { bgcolor: "#58641a", color: "white" },
+        }}
+      >
+        Создать пост
+      </Button>
       </Box>
 
       {!isLoading && cards && cards.length > 0 ? (

@@ -1,6 +1,5 @@
 
 import Comment from "../Comment/comment";
-import ModalConfirm from "../Modal/ModalConfirm";
 import NewComment from "../NewComment/newComment";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -10,13 +9,15 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Delete from "@mui/icons-material/Delete";
 import moment from "moment";
 import "moment/locale/ru";
 import { isLiked } from "../../utils";
-import { useState } from "react";
-import { useContext } from 'react';
-import { UserContext } from '../../context/userContext';
-import { PostContext } from '../../context/postContecst';
+import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../context/userContext";
+import { PostContext } from "../../context/postContext";
+import { ModalContext } from "../../context/modalContext";
 
 export const Post = ({
   post,
@@ -30,21 +31,26 @@ export const Post = ({
   comments,
   _id,
 }) => {
-  const { handlePostLike: onPostLike } =
-    useContext(PostContext);
   const { user: currentUser } = useContext(UserContext);
-
-  const liked = isLiked(likes, currentUser._id);
-  const [like, setLike] = useState(liked)
+  const { handlePostLike: onPostLike, setCurrentPost } =
+    useContext(PostContext);
+  const { handleOpen } = useContext(ModalContext);
+  const liked = isLiked(likes, currentUser?._id);
+  const [like, setLike] = useState(liked);
 
   function handleLikeClick(e) {
     e.stopPropagation();
-    console.log(post);
     onPostLike(post);
-    setLike(!like)
+    setLike(!like);
   }
-
-
+  function handleDeleteClick(e) {
+    e.stopPropagation()
+    handleOpen('confirm')
+  }
+  useEffect(() =>{
+    setCurrentPost(_id)
+  })
+  
   console.log("post");
 
   return (
@@ -56,7 +62,12 @@ export const Post = ({
           >
             {like ? <FavoriteIcon /> : <FavoriteBorder />}
           </IconButton>
-          <ModalConfirm post={post} />
+          <IconButton
+            aria-label="add to favorites"
+            onClick={(e) => handleDeleteClick(e)}
+          >
+            <Delete />
+          </IconButton>
         </CardActions>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -107,7 +118,6 @@ export const Post = ({
             ))}
         </Box>
       </Box>
-      
     </Box>
   );
 };

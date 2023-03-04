@@ -18,13 +18,13 @@ const NewComment = () => {
         sx={{ mb: 2 }}
         placeholder="Текст поста"
         multiline
-        rows={2}
+        // rows={2}
         maxRows={4}
-        slotProps={{
-          textarea: {
-            id: "text",
-          },
-        }}
+        // slotProps={{
+        //   textarea: {
+        //     id: "text",
+        //   },
+        // }}
       />
       <Button
         // onClick={handleClickButtonEdit}

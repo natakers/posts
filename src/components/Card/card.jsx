@@ -10,14 +10,14 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Delete from "@mui/icons-material/Delete";
 import moment from "moment";
-import "moment/locale/ru";
-import ModalConfirm from "../Modal/ModalConfirm";
 import { Link } from "react-router-dom";
 import "moment/locale/ru";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
-import { PostContext } from "../../context/postContecst";
+import { PostContext } from "../../context/postContext";
+import { ModalContext } from "../../context/modalContext";
 
 const PostCard = ({
   post,
@@ -31,14 +31,21 @@ const PostCard = ({
   _id,
 }) => {
   console.log("card");
-  const { handlePostLike: onPostLike } = useContext(PostContext);
+  const { handlePostLike: onPostLike, setCurrentPost } =
+    useContext(PostContext);
   const { user: currentUser } = useContext(UserContext);
-
+  const { handleOpen } = useContext(ModalContext);
   const liked = isLiked(likes, currentUser._id);
 
   function handleLikeClick(e) {
     e.stopPropagation();
     onPostLike(post);
+  }
+
+  function handleDeleteClick(e) {
+    e.stopPropagation();
+    handleOpen("confirm");
+    setCurrentPost(_id);
   }
 
   return (
@@ -56,7 +63,12 @@ const PostCard = ({
           title={title}
           subheader={moment(created_at).format("LL")}
         />
-      <CardMedia component="img" height="194" image={image} alt="Paella dish" />
+        <CardMedia
+          component="img"
+          height="194"
+          image={image}
+          alt="Paella dish"
+        />
         <CardContent>
           <Typography
             variant="body2"
@@ -77,9 +89,14 @@ const PostCard = ({
           onClick={(e) => handleLikeClick(e)}
         >
           {liked ? <FavoriteIcon /> : <FavoriteBorder />}
-          <span>{likes.length}</span>
+          {likes.length}
         </IconButton>
-        <ModalConfirm post={post} />
+        <IconButton
+          aria-label="add to favorites"
+          onClick={(e) => handleDeleteClick(e)}
+        >
+          <Delete />
+        </IconButton>
       </CardActions>
     </Card>
   );
