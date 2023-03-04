@@ -15,7 +15,8 @@ const Sort = memo(({ onChangeSort }) => {
   console.log("sort");
   const [alignment, setAlignment] = React.useState("По дате");
 
-  const handleChange = (newAlignment) => {
+  const handleChange = (event, newAlignment) => {
+    console.log(newAlignment);
     onChangeSort(newAlignment);
     setAlignment(newAlignment);
   };
