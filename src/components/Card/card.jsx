@@ -1,9 +1,19 @@
 import { isLiked } from "../../utils";
-import "./index.css";
-import { ReactComponent as Save } from "./save.svg";
-import { ReactComponent as Delete } from "./del.svg";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import moment from "moment";
+import "moment/locale/ru";
+import ModalConfirm from "../Modal/ModalConfirm";
 
-const Card = ({
+const PostCard = ({
   post,
   onPostLike,
   onPostDelete,
@@ -11,47 +21,52 @@ const Card = ({
   title,
   text,
   image,
+  tags,
   author,
   likes,
+  created_at,
   _id,
 }) => {
   const liked = isLiked(likes, currentUser._id);
 
-  function handleLikeClick() {
+  function handleLikeClick(e) {
+    e.stopPropagation();
     onPostLike(post);
   }
 
-  function handleDeleteClick() {
-    onPostDelete(post);
-  }
-
   return (
-    <div className="card">
-      <div className="card__buttons">
-        <button
-          className={
-            liked ? "card__favorite card__favorite_is-active" : "card__favorite"
-          }
-          onClick={handleLikeClick}
+    <Card sx={{ maxWidth: 345 }}>
+      <CardHeader
+        avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
+        title={title}
+        subheader={moment(created_at).format("LL")}
+      />
+      <CardMedia component="img" height="194" image={image} alt="Paella dish" />
+      <CardContent>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
         >
-          <Save className="card__favorite-icon" />
+          {text}
+        </Typography>
+      </CardContent>
+      <CardActions disableSpacing sx={{ justifyContent: "space-between" }}>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={(e) => handleLikeClick(e)}
+        >
+          {liked ? <FavoriteIcon /> : <FavoriteBorder />}
           <span>{likes.length}</span>
-        </button>
-        <button className={"card__favorite"} onClick={handleDeleteClick}>
-          <Delete className="card__favorite-icon" />
-        </button>
-      </div>
-
-      <a href="/product" className="card__link">
-        <img src={image} alt={title} className="card__image" />
-        <div className="card__sticky card__sticky_type_top-right"></div>
-        <div className="card__desc">
-          <p className="card__name">{title}</p>
-          <p className="card__name">{text}</p>
-        </div>
-      </a>
-    </div>
+        </IconButton>
+        <ModalConfirm post={post} onPostDelete={onPostDelete} />
+      </CardActions>
+    </Card>
   );
 };
 
-export default Card;
+export default PostCard;

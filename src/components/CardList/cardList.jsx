@@ -1,4 +1,4 @@
-import Card from "../Card/card";
+import PostCard from "../Card/card";
 import "./index.css";
 
 const CardList = ({ posts, onPostLike, onPostDelete, currentUser }) => {
@@ -6,7 +6,7 @@ const CardList = ({ posts, onPostLike, onPostDelete, currentUser }) => {
     <div className="cards">
       {posts &&
         posts.map((item, index) => (
-          <Card
+          <PostCard
             key={index}
             {...item}
             post={item}

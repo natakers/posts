@@ -45,6 +45,19 @@ class Api {
     }).then(onResponce);
   }
 
+  setUserInfo({ name, about }) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: "PATCH",
+      headers: {
+        authorization: this._token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        about,
+      }),
+    }).then(onResponce);
+  }
 
 }
 
