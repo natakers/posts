@@ -11,6 +11,9 @@ import "moment/locale/ru";
 import ModalConfirm from "../Modal/ModalConfirm";
 import { isLiked } from "../../utils";
 import { useState } from "react";
+import { useContext } from 'react';
+import { UserContext } from '../../context/userContext';
+import { PostContext } from '../../context/postContecst';
 
 export const Post = ({
   post,
@@ -21,10 +24,11 @@ export const Post = ({
   author,
   likes,
   created_at,
-  onPostLike,
-  onPostDelete,
-    currentUser,
 }) => {
+  const { handlePostLike: onPostLike } =
+    useContext(PostContext);
+  const { user: currentUser } = useContext(UserContext);
+
   const liked = isLiked(likes, currentUser._id);
   const [like, setLike] = useState(liked)
 
@@ -44,7 +48,7 @@ export const Post = ({
           >
             {like ? <FavoriteIcon /> : <FavoriteBorder />}
           </IconButton>
-          <ModalConfirm post={post} onPostDelete={onPostDelete} />
+          <ModalConfirm post={post} />
         </CardActions>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -76,7 +80,7 @@ export const Post = ({
       <Typography variant="h5" color="text.secondary" >
           {text}
         </Typography>
-        </Box>
+      </Box>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
         <CardMedia component="img" height="250" image={image} alt={title} />
         <Typography variant="body2" color="text.secondary">

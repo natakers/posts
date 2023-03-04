@@ -8,7 +8,7 @@ import { useApi } from "../../hooks/useApi";
 import api from "../../Api";
 
 
-const PostPage = ({ currentUser, onPostLike, onPostDelete }) => {
+const PostPage = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
 
@@ -16,28 +16,25 @@ const PostPage = ({ currentUser, onPostLike, onPostDelete }) => {
 
   const {
     data: post,
-    setData: setPost,
-    loading: isLoading,
-    error: errorState,
   } = useApi(handleGetPost);
 
   console.log(post);
   return (
-    <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
-      <div>
-        <Button
-          onClick={() => navigate(-1)}
-          variant="contained"
-          sx={{
-            backgroundColor: "#00718f",
-            ":hover": { bgcolor: "#58641a", color: "white" },
-          }}
-        >
-          Назад
-        </Button>
-      </div>
-      {post && <Post currentUser={currentUser} post={post} {...post} onPostDelete={onPostDelete} onPostLike={onPostLike} />}
-    </Box>
+        <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>
+          <div>
+            <Button
+              onClick={() => navigate(-1)}
+              variant="contained"
+              sx={{
+                backgroundColor: "#00718f",
+                ":hover": { bgcolor: "#58641a", color: "white" },
+              }}
+            >
+              Назад
+            </Button>
+          </div>
+      {post && <Post  post={post} {...post} />}
+        </Box>
   );
 };
 

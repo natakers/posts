@@ -5,15 +5,19 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Delete from "@mui/icons-material/Delete";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { PostContext } from "../../context/postContecst";
 
-const ModalConfirm = ({ post, onPostDelete }) => {
+const ModalConfirm = ({ post }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  let location = useLocation()
-  const navigate = useNavigate()
+  const { handlePostDelete: onPostDelete } = useContext(PostContext);
+
+  let location = useLocation();
+  const navigate = useNavigate();
   const style = {
     position: "absolute",
     top: "50%",

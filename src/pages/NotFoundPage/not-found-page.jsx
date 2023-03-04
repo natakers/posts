@@ -1,7 +1,10 @@
-import { NotFound } from "../../components/NotFound/NotFound";
+import { NotFound } from "../../components/NotFound/NotFound"
 
 const NotFoundPage = () => {
-  return <NotFound title="Страница не найдена" buttonText="На главную" />;
-};
+  console.log('notfoundpage');
+    return (
+      <NotFound  title="Страница не найдена" buttonText="На главную"/>
+    )
+}
 
-export default NotFoundPage;
+export default NotFoundPage
