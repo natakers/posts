@@ -1,4 +1,5 @@
 import { isLiked } from "../../utils";
+import "./index.css";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -12,12 +13,14 @@ import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import moment from "moment";
 import "moment/locale/ru";
 import ModalConfirm from "../Modal/ModalConfirm";
+import { Link } from "react-router-dom";
+import "moment/locale/ru";
+import { useContext } from "react";
+import { UserContext } from "../../context/userContext";
+import { PostContext } from "../../context/postContecst";
 
 const PostCard = ({
   post,
-  onPostLike,
-  onPostDelete,
-  currentUser,
   title,
   text,
   image,
@@ -27,6 +30,10 @@ const PostCard = ({
   created_at,
   _id,
 }) => {
+  console.log("card");
+  const { handlePostLike: onPostLike } = useContext(PostContext);
+  const { user: currentUser } = useContext(UserContext);
+
   const liked = isLiked(likes, currentUser._id);
 
   function handleLikeClick(e) {
@@ -35,26 +42,35 @@ const PostCard = ({
   }
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardHeader
-        avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
-        title={title}
-        subheader={moment(created_at).format("LL")}
-      />
+    <Card
+      sx={{
+        maxWidth: 345,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Link to={`/post/${_id}`} className="card__link">
+        <CardHeader
+          avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
+          title={title}
+          subheader={moment(created_at).format("LL")}
+        />
       <CardMedia component="img" height="194" image={image} alt="Paella dish" />
-      <CardContent>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {text}
-        </Typography>
-      </CardContent>
+        <CardContent>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {text}
+          </Typography>
+        </CardContent>
+      </Link>
       <CardActions disableSpacing sx={{ justifyContent: "space-between" }}>
         <IconButton
           aria-label="add to favorites"
@@ -63,7 +79,7 @@ const PostCard = ({
           {liked ? <FavoriteIcon /> : <FavoriteBorder />}
           <span>{likes.length}</span>
         </IconButton>
-        <ModalConfirm post={post} onPostDelete={onPostDelete} />
+        <ModalConfirm post={post} />
       </CardActions>
     </Card>
   );

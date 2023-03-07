@@ -12,8 +12,9 @@ import AdbIcon from "@mui/icons-material/AutoAwesome";
 
 const Header = ({ user, onUpdateUser }) => {
   const [isShow, setisShow] = useState(false);
-  const [nameUser, setName] = useState("");
-  const [aboutUser, setAbout] = useState("");
+  const [nameUser, setName] = useState(undefined);
+  const [aboutUser, setAbout] = useState(undefined);
+
   const handleClickButtonEdit = (e) => {
     e.preventDefault();
     setisShow(false);
@@ -21,9 +22,13 @@ const Header = ({ user, onUpdateUser }) => {
   };
 
   useEffect(() => {
-    setName(user.name);
-    setAbout(user.about);
+    if (user) {
+      setName(user.name);
+      setAbout(user.about);
+    }
   }, [user]);
+  console.log("header");
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#013f4e" }}>
       <Container maxWidth="xl">
@@ -43,7 +48,7 @@ const Header = ({ user, onUpdateUser }) => {
                 flexDirection: { xs: "column", md: "row" },
               }}
             >
-              {user.email &&
+              {user &&
                 (isShow ? (
                   <TextField
                     hiddenLabel
@@ -71,7 +76,7 @@ const Header = ({ user, onUpdateUser }) => {
                     {nameUser}
                   </Typography>
                 ))}
-              {user.about &&
+              {user &&
                 (isShow ? (
                   <TextField
                     hiddenLabel

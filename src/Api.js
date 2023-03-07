@@ -59,6 +59,15 @@ class Api {
     }).then(onResponce);
   }
 
+  getPostById(postId) {
+    return fetch(`${this._baseUrl}/posts/${postId}`, {
+        headers: {
+          authorization: this._token,
+          "Content-Type": "application/json",
+        }
+    }).then(onResponce)
+}
+
 }
 
 

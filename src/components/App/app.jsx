@@ -1,26 +1,33 @@
 import { useState, useEffect } from "react";
 import Footer from "../Footer/footer";
 import Header from "../Header/header";
-import CardList from "../CardList/cardList";
-import Spinner from "../Spinner/index";
 import "./index.css";
 import api from "../../Api";
-import Container from "@mui/material/Container";
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import { Routes, Route } from "react-router-dom";
+import NotFoundPage from "../../pages/NotFoundPage/not-found-page";
+import PostPage from "../../pages/PostPage/postPage";
+import { MainPage } from "../../pages/MainPage/mainPage";
+import { UserContext } from "../../context/userContext";
+import { PostContext } from "../../context/postContecst";
 
 const App = () => {
+  console.log("app");
+
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [cards, setCards] = useState([]);
+  const [currentSort, setCurrentSort] = useState("");
 
   useEffect(() => {
-    setLoading(true)
-    api.getUserInfo().then((userData) => {
-      setCurrentUser(userData);
-    });
-    api.getPostList().then((poststData) => {
-      setCards(poststData);
-      setLoading(false)
-    });
+    Promise.all([api.getPostList(), api.getUserInfo()]).then(
+      ([poststData, userData]) => {
+        setCurrentUser(userData);
+        setCards(poststData);
+        setLoading(false);
+      }
+    );
   }, []);
 
   function handleUpdateUser(userUpdate) {
@@ -40,30 +47,62 @@ const App = () => {
   }
 
   function handlePostDelete(post) {
+    setLoading(true)
     api.deletePost(post._id).then((res) => {
       api.getPostList().then((poststData) => {
         setCards(poststData);
+      setLoading(false)
       });
     });
   }
 
+  const onChangeSort = (id) => {
+    console.log(id);
+    setCurrentSort(id);
+  };
+
   return (
-    <>
-      <Header user={currentUser} onUpdateUser={handleUpdateUser}></Header>
-      <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
-        {!isLoading && cards && cards.length > 0 ? (
-          <CardList
-            posts={cards}
-            onPostLike={handlePostLike}
-            onPostDelete={handlePostDelete}
-            currentUser={currentUser}
-          />
-        ) : (
-          <Spinner />
-        )}
-      </Container>
-      <Footer />
-    </>
+    <UserContext.Provider value={{ user: currentUser, isLoading }}>
+      <PostContext.Provider value={{ handlePostLike, handlePostDelete,  }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+            height: "100vh",
+          }}
+        >
+          {currentUser && (
+            <Header user={currentUser} onUpdateUser={handleUpdateUser}></Header>
+          )}
+          <Container
+            sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
+          >
+            <Routes>
+              <Route
+                index
+                element={
+                  <MainPage
+                    cards={cards}
+                    onChangeSort={onChangeSort}
+                    currentSort={currentSort}
+                  />
+                }
+              />
+              <Route
+                path="/post/:postId"
+                element={
+                  <PostPage/>
+                }
+              />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Container>
+          <Footer />
+        </Box>
+      </PostContext.Provider>
+    </UserContext.Provider>
   );
 };
 

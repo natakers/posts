@@ -1,7 +1,8 @@
-import React from "react";
-import "./index.css";
+import React, { memo } from "react";
+import './index.css';
 
-const Footer = () => {
+const Footer = memo(() => {
+	console.log('footer');
 	return (
 		<footer className="footer">
 			<div className="container">
@@ -13,6 +14,6 @@ const Footer = () => {
 			</div>
 		</footer>
 	);
-};
+});
 
 export default Footer;
