@@ -28,11 +28,11 @@ const App = () => {
   const [secondType, setsecondType] = useState("");
 
   const handleClose = () => {
-    setCurrentPost(null);
+    // setCurrentPost(null);
     setType("");
     setOpen(false);
   };
-  const handleOpen = (type, secondType='') => {
+  const handleOpen = (type, secondType = "") => {
     setType(type);
     setsecondType(secondType);
     setOpen(true);
@@ -53,6 +53,18 @@ const App = () => {
       .then((newUserData) => {
         setCurrentUser(newUserData);
       })
+      .catch((err) => alert(err));
+  }
+  function handleUpdateAvatar(avatar) {
+    api
+      .setUserAvatar(avatar)
+      .then((newUserAvatar) => {
+        setCurrentUser(newUserAvatar);
+      }).then((res) => {
+        api.getPostList().then((poststData) => {
+          setCards(poststData);
+          setLoading(false);
+        })})
       .catch((err) => alert(err));
   }
 
@@ -84,7 +96,9 @@ const App = () => {
   };
 
   return (
-    <UserContext.Provider value={{ user: currentUser, isLoading, handleUpdateUser }}>
+    <UserContext.Provider
+      value={{ user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar }}
+    >
       <PostContext.Provider
         value={{
           handlePostLike,
@@ -94,7 +108,16 @@ const App = () => {
         }}
       >
         <ModalContext.Provider
-          value={{ open, setOpen, handleOpen, handleClose, type, secondType, setType, setCards }}
+          value={{
+            open,
+            setOpen,
+            handleOpen,
+            handleClose,
+            type,
+            secondType,
+            setType,
+            setCards,
+          }}
         >
           <Box
             sx={{

@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -7,10 +8,11 @@ import "moment/locale/ru";
 import { useState } from "react";
 import api from "../../Api";
 import Button from "@mui/material/Button";
+import { ModalContext } from "../../context/modalContext";
 
 const Comment = ({ comment }) => {
   const [author, setAuthor] = useState(null);
-
+  const { handleOpen } = useContext(ModalContext);
   const fetchAuthor = async (id) => {
     let result;
 
@@ -27,6 +29,11 @@ const Comment = ({ comment }) => {
   };
   if (author == null) {
     fetchAuthor(comment.author);
+  }
+
+  const handleDeleteComment = (e) => {
+    e.stopPropagation()
+    handleOpen('confirm', 'comment')
   }
 
   return (
@@ -58,7 +65,7 @@ const Comment = ({ comment }) => {
       </Box>
       </Box>
       <Button
-        // onClick={handleClickButtonEdit}
+        onClick={(e) => handleDeleteComment(e)}
         variant="contained"
         sx={{
           backgroundColor: "#f0e2d5",

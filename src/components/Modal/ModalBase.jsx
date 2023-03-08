@@ -31,7 +31,7 @@ const ModalBase = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {type === "confirm" && <ModalConfirm />}
+          {type === "confirm" && <ModalConfirm type={secondType}/>}
           {type === "post_modal" && <ModalPost type={secondType} />}
           {type === "update_user" && <ModalUpdateUser />}
         </Box>

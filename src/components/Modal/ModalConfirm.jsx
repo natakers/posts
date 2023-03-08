@@ -11,17 +11,23 @@ const ModalConfirm = () => {
   const navigate = useNavigate();
   const { handlePostDelete: onPostDelete, currentPost } =
     useContext(PostContext);
-  const { handleClose } = useContext(ModalContext);
+  const { handleClose, secondType } = useContext(ModalContext);
 
   let location = useLocation();
 
   function handleDel(e) {
     e.stopPropagation();
-    onPostDelete();
-    handleClose();
-    if (currentPost._id === location.pathname.split("/").reverse()[0]) {
-      navigate(-1);
+    if (secondType === 'post' ) {
+      onPostDelete();
+      handleClose();
+      if (currentPost._id === location.pathname.split("/").reverse()[0]) {
+        navigate(-1);
+      }
     }
+    if (secondType === 'comment' ) {
+        
+    }
+    
   }
   return (
     <>
@@ -31,7 +37,7 @@ const ModalConfirm = () => {
         variant="h6"
         component="h2"
       >
-        Уверены что хотите удалить пост?
+        {`Уверены что хотите удалить ${secondType === 'post' ? 'пост' : secondType === 'comment' ? "комментарий" : "ОШИБКА"}?`}
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>

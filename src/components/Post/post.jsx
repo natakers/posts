@@ -34,8 +34,7 @@ export const Post = ({
 
   useEffect(() =>{
     setCurrentPost(post)
-    
-  }, [])
+  }, [post, setCurrentPost])
 
   useEffect(() =>{
     if (currentPost) {
@@ -51,7 +50,7 @@ export const Post = ({
   }
   function handleDeleteClick(e) {
     e.stopPropagation()
-    handleOpen('confirm')
+    handleOpen('confirm', "post")
   }
 
   const handleEditClick = (e) => {
@@ -121,7 +120,7 @@ export const Post = ({
       </Typography>
     </Box>
     <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-      <CardMedia component="img" height="250" image={currentPost.image} alt={currentPost.title} />
+      <CardMedia style={{flexBasis: "30%"}} component="img" height="250" image={currentPost.image} alt={currentPost.title} />
       <Typography variant="body2" color="text.secondary">
         {currentPost.text}
       </Typography>

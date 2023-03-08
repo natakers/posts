@@ -60,6 +60,20 @@ class Api {
     }).then(onResponce);
   }
 
+  setUserAvatar(avatar) {
+    console.log({avatar});
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
+      method: "PATCH",
+      headers: {
+        authorization: this._token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        avatar
+      }),
+    }).then(onResponce);
+  }
+
   getPostById(postId) {
     return fetch(`${this._baseUrl}/posts/${postId}`, {
       headers: {

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState, useMemo } from "react";
+import { useContext, /*useState*/ } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -11,8 +11,8 @@ import { useForm } from "react-hook-form";
 
 const ModalUpdateUser = () => {
   const { handleClose } = useContext(ModalContext);
-  const { user: currentUser, handleUpdateUser } = useContext(UserContext);
-  const [avatarUser, setAvatar] = useState(currentUser.avatar);
+  const { user: currentUser, handleUpdateUser, handleUpdateAvatar } = useContext(UserContext);
+  // const [avatarUser, setAvatar] = useState(currentUser.avatar);
 
   const {
     register,
@@ -25,6 +25,7 @@ const ModalUpdateUser = () => {
 
   const onSubmit = (data) => {
     handleUpdateUser(data);
+    handleUpdateAvatar(data.avatar)
     handleClose();
   };
 
@@ -94,7 +95,7 @@ const ModalUpdateUser = () => {
               variant="outlined"
               size="small"
               sx={{ backgroundColor: "white", m: "0.5rem 0" }}
-              defaultValue={avatarUser}
+              defaultValue={currentUser.avatar}
               value={register("avatar").value}
               onChange={register("avatar").onChange}
               {...register("avatar")}
