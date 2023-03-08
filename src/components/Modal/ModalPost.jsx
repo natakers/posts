@@ -10,9 +10,9 @@ import api from "../../Api";
 
 const ModalPost = () => {
   const { handleClose, setCards, secondType } = useContext(ModalContext);
-  const { handlePostDelete: onPostDelete, currentPost } =
+  const { currentPost, setCurrentPost } =
   useContext(PostContext);
-  console.log(secondType);
+
   const {
     register,
     handleSubmit,
@@ -23,10 +23,19 @@ const ModalPost = () => {
 
   const onSubmit = async (data) => {
     data = { ...data, tags: data.tags.split(" ") };
-    await api.postPost(data);
+    if (secondType === "create") {
+      await api.postPost(data);
+      
+    }
+    if (secondType === "update") {
+      await api.updatePost(currentPost._id, data)
+    }
     let result = await api.getPostList();
-    setCards(result);
-    handleClose();
+      setCards(result);
+      handleClose();
+      if (secondType === "update") {
+        setCurrentPost(result.filter((post) => post._id === currentPost._id)[0])
+      }
   };
   
   return (
@@ -47,7 +56,7 @@ const ModalPost = () => {
         label="Название поста"
         id="postName"
         variant="outlined"
-        defaultValue={(currentPost && secondType === "create") ? currentPost.title : ''}
+        defaultValue={(currentPost && secondType === "update") ? currentPost.title : ''}
         {...register("title")}
         type="text"
         value={
@@ -73,6 +82,7 @@ const ModalPost = () => {
         label="Текст поста"
         id="postText"
         variant="outlined"
+        defaultValue={(currentPost && secondType === "update") ? currentPost.text : ''}
         {...register("text", {
           required: "Обязательное поле",
         })}
@@ -90,6 +100,7 @@ const ModalPost = () => {
         label="Адрес картинки"
         id="postText"
         variant="outlined"
+        defaultValue={(currentPost && secondType === "update") ? currentPost.image : ''}
         {...register("image", {
           required: "Обязательное поле",
           pattern: {
@@ -112,6 +123,7 @@ const ModalPost = () => {
         label="Напишите тэги через пробел"
         id="postText"
         variant="outlined"
+        defaultValue={(currentPost && secondType === "update") ? currentPost.tags.join(' ') : ''}
         {...register("tags", {
           required: "Обязательное поле",
         })}

@@ -71,7 +71,7 @@ const App = () => {
 
   function handlePostDelete() {
     setLoading(true);
-    api.deletePost(currentPost).then((res) => {
+    api.deletePost(currentPost._id).then((res) => {
       api.getPostList().then((poststData) => {
         setCards(poststData);
         setLoading(false);

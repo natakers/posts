@@ -37,6 +37,7 @@ class Api {
   }
 
   deletePost(postID) {
+    console.log(postID);
     return fetch(`${this._baseUrl}/posts/${postID}`, {
       method: "DELETE",
       headers: {
@@ -100,6 +101,17 @@ class Api {
   postPost(data) {
 		return fetch(`${this._baseUrl}/posts`, {
       method: "POST",
+			headers: {
+				authorization: this._token,
+        "Content-Type": "application/json",
+			},
+      body: JSON.stringify(data),
+		}).then(onResponce);
+	}
+
+  updatePost(id, data) {
+		return fetch(`${this._baseUrl}/posts/${id}`, {
+      method: "PATCH",
 			headers: {
 				authorization: this._token,
         "Content-Type": "application/json",

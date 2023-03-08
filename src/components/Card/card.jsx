@@ -45,7 +45,7 @@ const PostCard = ({
   function handleDeleteClick(e) {
     e.stopPropagation();
     handleOpen("confirm");
-    setCurrentPost(_id);
+    setCurrentPost(post);
   }
 
   return (

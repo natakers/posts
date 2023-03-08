@@ -19,7 +19,7 @@ const ModalConfirm = () => {
     e.stopPropagation();
     onPostDelete();
     handleClose();
-    if (currentPost === location.pathname.split("/").reverse()[0]) {
+    if (currentPost._id === location.pathname.split("/").reverse()[0]) {
       navigate(-1);
     }
   }

@@ -14,8 +14,6 @@ const ModalUpdateUser = () => {
   const { user: currentUser, handleUpdateUser } = useContext(UserContext);
   const [avatarUser, setAvatar] = useState(currentUser.avatar);
 
-  console.log(currentUser);
-
   const {
     register,
     handleSubmit,
@@ -26,12 +24,10 @@ const ModalUpdateUser = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     handleUpdateUser(data);
     handleClose();
   };
 
-  console.log(avatarUser);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

@@ -10,14 +10,14 @@ import { PostContext } from "../../context/postContext";
 import { useState } from "react";
 import api from "../../Api";
 
-const NewComment = ({setCommentsLocal, }) => {
+const NewComment = ({setCommentsLocal }) => {
   const { user: currentUser } = useContext(UserContext);
   const { currentPost } = useContext(PostContext);
   const [comment, setComment] = useState('');
 
   const handleClickAdd = async () => {
     try {
-      let result = await api.postComment(currentPost, comment);
+      let result = await api.postComment(currentPost._id, comment);
       setCommentsLocal(result.comments.reverse())
       setComment('')
     } catch (error) {
