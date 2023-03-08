@@ -48,7 +48,7 @@ export const MainPage = ({ cards, onChangeSort, currentSort }) => {
       >
         <Sort onChangeSort={onChangeSort} />
         <Button
-        onClick={() => handleOpen('add_post')}
+        onClick={() => handleOpen('post_modal', "create")}
         variant="contained"
         sx={{
           backgroundColor: "#00718f",

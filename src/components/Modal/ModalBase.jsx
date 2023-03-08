@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ModalAdd from "./ModalAdd";
+import ModalPost from "./ModalPost";
 import ModalConfirm from "./ModalConfirm";
 import { ModalContext } from "../../context/modalContext";
+import ModalUpdateUser from "./ModalUpdeteUser";
 
 const ModalBase = () => {
-  const { open, handleClose, type } = useContext(ModalContext);
+  const { open, handleClose, type, secondType } = useContext(ModalContext);
   const style = {
     position: "absolute",
     top: "50%",
@@ -31,7 +32,8 @@ const ModalBase = () => {
       >
         <Box sx={style}>
           {type === "confirm" && <ModalConfirm />}
-          {type === "add_post" && <ModalAdd />}
+          {type === "post_modal" && <ModalPost type={secondType} />}
+          {type === "update_user" && <ModalUpdateUser />}
         </Box>
       </Modal>
     </>

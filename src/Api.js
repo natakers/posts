@@ -96,6 +96,17 @@ class Api {
       }),
 		}).then(onResponce);
 	}
+
+  postPost(data) {
+		return fetch(`${this._baseUrl}/posts`, {
+      method: "POST",
+			headers: {
+				authorization: this._token,
+        "Content-Type": "application/json",
+			},
+      body: JSON.stringify(data),
+		}).then(onResponce);
+	}
 }
 
 

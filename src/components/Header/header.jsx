@@ -9,11 +9,15 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import AdbIcon from "@mui/icons-material/AutoAwesome";
+import { useContext } from "react";
+import { ModalContext } from "../../context/modalContext";
 
 const Header = ({ user, onUpdateUser }) => {
   const [isShow, setisShow] = useState(false);
   const [nameUser, setName] = useState(undefined);
   const [aboutUser, setAbout] = useState(undefined);
+
+  const { handleOpen } = useContext(ModalContext);
 
   const handleClickButtonEdit = (e) => {
     e.preventDefault();
@@ -21,6 +25,10 @@ const Header = ({ user, onUpdateUser }) => {
     onUpdateUser({ name: nameUser, about: aboutUser });
   };
 
+
+  const handleOpenModal = () => {
+    handleOpen("update_user");
+  }
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -107,7 +115,7 @@ const Header = ({ user, onUpdateUser }) => {
             </Box>
             {!isShow ? (
               <Button
-                onClick={() => setisShow(true)}
+                onClick={() => handleOpenModal()}
                 variant="contained"
                 sx={{
                   backgroundColor: "#00718f",

@@ -25,14 +25,16 @@ const App = () => {
 
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("");
+  const [secondType, setsecondType] = useState("");
 
   const handleClose = () => {
     setCurrentPost(null);
     setType("");
     setOpen(false);
   };
-  const handleOpen = (type) => {
+  const handleOpen = (type, secondType='') => {
     setType(type);
+    setsecondType(secondType);
     setOpen(true);
   };
   useEffect(() => {
@@ -82,7 +84,7 @@ const App = () => {
   };
 
   return (
-    <UserContext.Provider value={{ user: currentUser, isLoading }}>
+    <UserContext.Provider value={{ user: currentUser, isLoading, handleUpdateUser }}>
       <PostContext.Provider
         value={{
           handlePostLike,
@@ -92,7 +94,7 @@ const App = () => {
         }}
       >
         <ModalContext.Provider
-          value={{ open, setOpen, handleOpen, handleClose, type, setType }}
+          value={{ open, setOpen, handleOpen, handleClose, type, secondType, setType, setCards }}
         >
           <Box
             sx={{
