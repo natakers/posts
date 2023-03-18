@@ -40,22 +40,23 @@ const App = () => {
     setOpen(true);
   };
   useEffect(() => {
-    setToken(localStorage.getItem("token"))
+    setToken(localStorage.getItem("token"));
     if (token) {
       setLoading(true);
-      api._token = `Bearer ${token}`
+      api._token = `Bearer ${token}`;
       Promise.all([api.getPostList(), api.getUserInfo()])
-      .then(([poststData, userData]) => {
-        setCurrentUser(userData);
-        setCards(poststData);
+        .then(([poststData, userData]) => {
+          setCurrentUser(userData);
+          setCards(poststData);
+          
+        })
+        .catch((err) => alert(err));
         setLoading(false);
-      })
-      .catch((err) => alert(err));
     }
-    
   }, [token]);
 
   function handleUpdateUser(userUpdate) {
+    setLoading(true);
     api
       .setUserInfo(userUpdate)
       .then((newUserData) => {
@@ -68,12 +69,14 @@ const App = () => {
       .setUserAvatar(avatar)
       .then((newUserAvatar) => {
         setCurrentUser(newUserAvatar);
-      }).then((res) => {
+      })
+      .then((res) => {
         api.getPostList().then((poststData) => {
           setCards(poststData);
-          setLoading(false);
-        })})
+        });
+      })
       .catch((err) => alert(err));
+      setLoading(false);
   }
 
   function handlePostLike(post) {
@@ -89,41 +92,52 @@ const App = () => {
       .catch((err) => alert(err));
   }
 
-  function handlePostDelete() {
-    setLoading(true);
-    api.deletePost(currentPost._id).then((res) => {
-      api.getPostList().then((poststData) => {
-        setCards(poststData);
-        setLoading(false);
-      });
-    });
-  }
+  const handlePostDelete = async () => {
+    try {
+      setLoading(true);
+      await api.deletePost(currentPost._id);
+      const poststData = await api.getPostList();
+      setCards(poststData);
+      
+    } catch (error) {
+      alert(error);
+    }
+    setLoading(false);
+  };
 
   const handleCommentDelete = async () => {
     try {
       setLoading(true);
-      await api.deleteComment(currentPost._id, currentComment)
-      let result = await api.getComments(currentPost._id)
-      setCurrentCommentList(result.reverse())
-      setLoading(false);
-    } catch( error) {
-      alert(error)
+      await api.deleteComment(currentPost._id, currentComment);
+      let result = await api.getComments(currentPost._id);
+      setCurrentCommentList(result.reverse());
+    } catch (error) {
+      alert(error);
     }
-  }
+    setLoading(false);
+  };
 
   const onChangeSort = (id) => {
     setCurrentSort(id);
   };
 
   const handleDeleteUser = () => {
-    setToken(null)
+    setToken(null);
     localStorage.setItem("token", "");
-    setCurrentUser({})
-  }
+    setCurrentUser({});
+  };
 
   return (
     <UserContext.Provider
-      value={{ user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar, token, setToken, handleDeleteUser }}
+      value={{
+        user: currentUser,
+        isLoading,
+        handleUpdateUser,
+        handleUpdateAvatar,
+        token,
+        setToken,
+        handleDeleteUser,
+      }}
     >
       <PostContext.Provider
         value={{
@@ -132,10 +146,10 @@ const App = () => {
           currentPost,
           setCurrentPost,
           handleCommentDelete,
-          currentComment, 
+          currentComment,
           setCurrentComment,
-          currentCommentList, 
-          setCurrentCommentList
+          currentCommentList,
+          setCurrentCommentList,
         }}
       >
         <ModalContext.Provider
@@ -159,9 +173,7 @@ const App = () => {
               height: "100vh",
             }}
           >
-              <Header
-                onUpdateUser={handleUpdateUser}
-              ></Header>
+            <Header onUpdateUser={handleUpdateUser}></Header>
             <Container
               sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
             >
