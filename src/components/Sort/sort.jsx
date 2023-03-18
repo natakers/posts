@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { tabs } from "../../utils";
@@ -13,7 +13,7 @@ const theme1 = createTheme({
 });
 const Sort = memo(({ onChangeSort }) => {
   console.log("sort");
-  const [alignment, setAlignment] = React.useState("По дате");
+  const [alignment, setAlignment] = useState("По дате");
 
   const handleChange = (event, newAlignment) => {
     console.log(newAlignment);

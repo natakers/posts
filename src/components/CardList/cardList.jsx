@@ -1,8 +1,9 @@
 import PostCard from "../Card/card";
 import "./index.css";
 
-const CardList = ({ posts, currentUser }) => {
-console.log('cardlist');
+
+const CardList = ({ posts }) => {
+  console.log("cardlist");
 
   return (
     <div className="cards">

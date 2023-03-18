@@ -67,7 +67,7 @@ const PostCard = ({
           component="img"
           height="194"
           image={image}
-          alt="Paella dish"
+          alt={title}
         />
         <CardContent>
           <Typography

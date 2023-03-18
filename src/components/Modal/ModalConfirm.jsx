@@ -6,12 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
+import { UserContext } from "../../context/userContext";
+
 
 const ModalConfirm = () => {
   const navigate = useNavigate();
-  const { handlePostDelete: onPostDelete, currentPost } =
+  const { handlePostDelete: onPostDelete, currentPost, handleCommentDelete } =
     useContext(PostContext);
   const { handleClose, secondType } = useContext(ModalContext);
+  const { handleDeleteUser } = useContext(UserContext);
 
   let location = useLocation();
 
@@ -25,7 +28,13 @@ const ModalConfirm = () => {
       }
     }
     if (secondType === 'comment' ) {
-        
+      handleCommentDelete()
+      handleClose();
+    }
+
+    if (secondType === 'user' ) {
+      handleDeleteUser()
+      handleClose();
     }
     
   }
@@ -37,7 +46,7 @@ const ModalConfirm = () => {
         variant="h6"
         component="h2"
       >
-        {`Уверены что хотите удалить ${secondType === 'post' ? 'пост' : secondType === 'comment' ? "комментарий" : "ОШИБКА"}?`}
+        {`${secondType === 'post' ? 'Уверены что хотите удалить пост' : secondType === 'comment' ? "Уверены что хотите удалить комментарий" : secondType === 'user' ? 'Уверены что хотите выйти' : "ОШИБКА"}?`}
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>

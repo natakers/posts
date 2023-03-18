@@ -1,12 +1,34 @@
 const onResponce = (res) => {
   console.log(res);
+  console.log(api._token);
   return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 };
 
 class Api {
   constructor({ baseUrl, token }) {
-    this._token = `Bearer ${token}`;
+    this._token = '';
     this._baseUrl = baseUrl;
+  }
+
+  singUpUser(data) {
+    return fetch(`https://api.react-learning.ru/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then(onResponce);
+  }
+
+  singInUser(data) {
+    return fetch(`https://api.react-learning.ru/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+    .then(onResponce);
   }
 
   getUserInfo() {
@@ -133,13 +155,31 @@ class Api {
       body: JSON.stringify(data),
 		}).then(onResponce);
 	}
+
+  deleteComment(postID, commentID) {
+    console.log(postID);
+    return fetch(`${this._baseUrl}/posts/comments/${postID}/${commentID}`, {
+      method: "DELETE",
+      headers: {
+        authorization: this._token,
+      },
+    }).then(onResponce);
+  }
+
+  getPostPagin(page, number) {
+    return fetch(`${this._baseUrl}/posts/paginate?page=${page}&limit=${number}`, {
+      headers: {
+        authorization: this._token,
+      },
+    }).then(onResponce);
+  }
 }
 
 
 
 const config = {
     baseUrl:'https://api.react-learning.ru/v2/group-10',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2UxMmRmNDU5Yjk4YjAzOGY3N2IyMjgiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc1NzAxNzgwLCJleHAiOjE3MDcyMzc3ODB9.zyudBlyMJGJX7MyT2kglcsfV5h-RFGpaT7KCgoV76Sw'
+    // token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2UxMmRmNDU5Yjk4YjAzOGY3N2IyMjgiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc1NzAxNzgwLCJleHAiOjE3MDcyMzc3ODB9.zyudBlyMJGJX7MyT2kglcsfV5h-RFGpaT7KCgoV76Sw'
 }
 
 const api = new Api(config)

@@ -25,12 +25,11 @@ export const Post = ({
   likes,
 }) => {
   const { user: currentUser } = useContext(UserContext);
-  const { handlePostLike: onPostLike, setCurrentPost, currentPost } =
+  const { handlePostLike: onPostLike, setCurrentPost, currentPost, currentCommentList, setCurrentCommentList } =
     useContext(PostContext);
   const { handleOpen } = useContext(ModalContext);
   const liked = isLiked(likes, currentUser?._id);
   const [like, setLike] = useState(liked);
-  const [commentsLocal, setCommentsLocal] = useState([]);
 
   useEffect(() =>{
     setCurrentPost(post)
@@ -38,10 +37,10 @@ export const Post = ({
 
   useEffect(() =>{
     if (currentPost) {
-      setCommentsLocal(currentPost.comments.reverse())
+      setCurrentCommentList(currentPost.comments.reverse())
     }
     
-  }, [currentPost])
+  }, [setCurrentCommentList, currentPost])
   
   function handleLikeClick(e) {
     e.stopPropagation();
@@ -129,10 +128,10 @@ export const Post = ({
       <Typography variant="body2" color="text.secondary">
         Комментарии
       </Typography>
-      <NewComment setCommentsLocal={setCommentsLocal} />
+      <NewComment />
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        {commentsLocal &&
-          commentsLocal.map((comment) => (
+        {currentCommentList &&
+          currentCommentList.map((comment) => (
             <Comment key={comment._id} comment={comment}/>
           ))}
       </Box>

@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
@@ -9,30 +8,47 @@ import { UserContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import { useState } from "react";
 import api from "../../Api";
+import IconButton from "@mui/material/IconButton";
+import SaveIcon from '@mui/icons-material/Save';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-const NewComment = ({setCommentsLocal }) => {
+
+const NewComment = () => {
   const { user: currentUser } = useContext(UserContext);
-  const { currentPost } = useContext(PostContext);
+  const { currentPost, setCurrentCommentList } = useContext(PostContext);
   const [comment, setComment] = useState('');
+  const style = {
+    backgroundColor: "#fff",
+    color: "rgba(0, 0, 0, 0.87)",
+    borderRadius: "4px",
+    boxShadow: "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
+    display: "flex", 
+    alignItems: "flex-start",
+    width: { xs: "100%", md: "50%" },
+    padding: "0.5rem"
+  } 
 
   const handleClickAdd = async () => {
     try {
       let result = await api.postComment(currentPost._id, comment);
-      setCommentsLocal(result.comments.reverse())
+      setCurrentCommentList(result.comments.reverse())
       setComment('')
     } catch (error) {
       alert(error);
     }
-    
+  }
+
+  const handleClickClean = () => {
+    setComment('')
   }
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+    <Box sx={ style }>
       <Tooltip title="Open settings">
         <Avatar alt="avatar" src={currentUser.avatar} />
       </Tooltip>
       <TextField
-        sx={{ mb: 2 }}
-        placeholder="Текст поста"
+        sx={{ m: "0.5rem" }}
+        placeholder="Текст комментария"
         multiline
         maxRows={4}
         value={comment}
@@ -40,27 +56,18 @@ const NewComment = ({setCommentsLocal }) => {
           setComment(e.target.value);
         }}
       />
-      <Button
-        onClick={handleClickAdd}
-        variant="contained"
-        sx={{
-          backgroundColor: "#00718f",
-          ":hover": { bgcolor: "#58641a", color: "white" },
-        }}
-      >
-        ✓
-      </Button>
-      <Button
-        // onClick={handleClickButtonEdit}
-        variant="contained"
-        sx={{
-          backgroundColor: "#f0e2d5",
-          color: "#013f4e",
-          ":hover": { bgcolor: "#58641a", color: "white" },
-        }}
-      >
-        x
-      </Button>
+      <IconButton
+          aria-label=""
+          onClick={handleClickAdd}
+        >
+          <SaveIcon />
+        </IconButton>
+      <IconButton
+          aria-label=""
+          onClick={handleClickClean}
+        >
+          <HighlightOffIcon />
+        </IconButton>
     </Box>
   );
 };

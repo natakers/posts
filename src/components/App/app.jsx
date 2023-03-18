@@ -22,13 +22,14 @@ const App = () => {
   const [cards, setCards] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [currentSort, setCurrentSort] = useState("");
-
+  const [currentComment, setCurrentComment] = useState(null);
+  const [currentCommentList, setCurrentCommentList] = useState(null);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("");
   const [secondType, setsecondType] = useState("");
+  const [token, setToken] = useState(null);
 
   const handleClose = () => {
-    // setCurrentPost(null);
     setType("");
     setOpen(false);
   };
@@ -38,14 +39,20 @@ const App = () => {
     setOpen(true);
   };
   useEffect(() => {
-    Promise.all([api.getPostList(), api.getUserInfo()])
+    setToken(localStorage.getItem("token"))
+    if (token) {
+      setLoading(true);
+      api._token = `Bearer ${token}`
+      Promise.all([api.getPostList(), api.getUserInfo()])
       .then(([poststData, userData]) => {
         setCurrentUser(userData);
         setCards(poststData);
         setLoading(false);
       })
       .catch((err) => alert(err));
-  }, []);
+    }
+    
+  }, [token]);
 
   function handleUpdateUser(userUpdate) {
     api
@@ -91,13 +98,30 @@ const App = () => {
     });
   }
 
+  const handleCommentDelete = async () => {
+    try {
+      setLoading(true);
+      await api.deleteComment(currentPost._id, currentComment)
+      let result = await api.getComments(currentPost._id)
+      setCurrentCommentList(result.reverse())
+      setLoading(false);
+    } catch( error) {
+      alert(error)
+    }
+  }
+
   const onChangeSort = (id) => {
     setCurrentSort(id);
   };
 
+  const handleDeleteUser = () => {
+    setToken(null)
+    localStorage.setItem("token", "");
+  }
+
   return (
     <UserContext.Provider
-      value={{ user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar }}
+      value={{ user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar, token, setToken, handleDeleteUser }}
     >
       <PostContext.Provider
         value={{
@@ -105,6 +129,11 @@ const App = () => {
           handlePostDelete,
           currentPost,
           setCurrentPost,
+          handleCommentDelete,
+          currentComment, 
+          setCurrentComment,
+          currentCommentList, 
+          setCurrentCommentList
         }}
       >
         <ModalContext.Provider
@@ -141,14 +170,14 @@ const App = () => {
                 <Route
                   index
                   element={
-                    <MainPage
+                    token && <MainPage
                       cards={cards}
                       onChangeSort={onChangeSort}
                       currentSort={currentSort}
                     />
                   }
                 />
-                <Route path="/post/:postId" element={<PostPage />} />
+                <Route path="/post/:postId" element={token && <PostPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Container>

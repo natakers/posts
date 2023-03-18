@@ -7,12 +7,16 @@ import moment from "moment";
 import "moment/locale/ru";
 import { useState } from "react";
 import api from "../../Api";
-import Button from "@mui/material/Button";
 import { ModalContext } from "../../context/modalContext";
+import { PostContext } from "../../context/postContext";
+import IconButton from "@mui/material/IconButton";
+import Delete from "@mui/icons-material/Delete";
 
 const Comment = ({ comment }) => {
   const [author, setAuthor] = useState(null);
   const { handleOpen } = useContext(ModalContext);
+  const { setCurrentComment } = useContext(PostContext);
+
   const fetchAuthor = async (id) => {
     let result;
 
@@ -20,7 +24,7 @@ const Comment = ({ comment }) => {
       result = await api.getUser(id);
       setAuthor(result);
     } catch (error) {
-      console.log(error.response.status);
+      console.log(error);
     }
 
     if (!result) {
@@ -32,9 +36,10 @@ const Comment = ({ comment }) => {
   }
 
   const handleDeleteComment = (e) => {
-    e.stopPropagation()
-    handleOpen('confirm', 'comment')
-  }
+    e.stopPropagation();
+    setCurrentComment(comment._id);
+    handleOpen("confirm", "comment");
+  };
 
   return (
     <Box
@@ -49,32 +54,32 @@ const Comment = ({ comment }) => {
       }}
     >
       <Box sx={{ display: "flex" }}>
-      {author && (
-        <Tooltip title="Open settings">
-          <Avatar sx={{ mr: 1 }} alt="avatar" src={author.avatar} />
-        </Tooltip>
-      )}
+        {author && (
+          <Tooltip title="Open settings">
+            <Avatar sx={{ mr: 1 }} alt="avatar" src={author.avatar} />
+          </Tooltip>
+        )}
 
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="body2" color="text.secondary">
-          {moment(comment.updated_at).format("hh:mm:ss DD-MM:YYYY")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {comment.text}
-        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          {author && (
+            <Tooltip title="Open settings">
+              <Typography>{author.name}</Typography>
+            </Tooltip>
+          )}
+          <Typography variant="body2" color="text.secondary">
+            {moment(comment.updated_at).format("HH:mm:ss DD.MM.YYYY")}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {comment.text}
+          </Typography>
+        </Box>
       </Box>
-      </Box>
-      <Button
+      <IconButton
+        aria-label="add to favorites"
         onClick={(e) => handleDeleteComment(e)}
-        variant="contained"
-        sx={{
-          backgroundColor: "#f0e2d5",
-          color: "#013f4e",
-          ":hover": { bgcolor: "#58641a", color: "white" },
-        }}
       >
-        del
-      </Button>
+        <Delete />
+      </IconButton>
     </Box>
   );
 };

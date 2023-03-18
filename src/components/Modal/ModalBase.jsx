@@ -5,6 +5,8 @@ import ModalPost from "./ModalPost";
 import ModalConfirm from "./ModalConfirm";
 import { ModalContext } from "../../context/modalContext";
 import ModalUpdateUser from "./ModalUpdeteUser";
+import ModalSignUp from "./ModalSignUp";
+import ModalSignIn from "./ModalSignIn";
 
 const ModalBase = () => {
   const { open, handleClose, type, secondType } = useContext(ModalContext);
@@ -34,6 +36,8 @@ const ModalBase = () => {
           {type === "confirm" && <ModalConfirm type={secondType}/>}
           {type === "post_modal" && <ModalPost type={secondType} />}
           {type === "update_user" && <ModalUpdateUser />}
+          {type === "signUp" && <ModalSignUp />}
+          {type === "signIn" && <ModalSignIn />}
         </Box>
       </Modal>
     </>
