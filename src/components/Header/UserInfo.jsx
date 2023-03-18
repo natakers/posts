@@ -6,12 +6,14 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { useContext } from "react";
 import { ModalContext } from "../../context/modalContext";
+import { UserContext } from "../../context/userContext";
 
-const UserInfo = ({ user, onUpdateUser }) => {
+const UserInfo = ({ onUpdateUser }) => {
   console.log("userInfo");
   const [isShow, setisShow] = useState(false);
   const [nameUser, setName] = useState(undefined);
   const [aboutUser, setAbout] = useState(undefined);
+  const { user } = useContext(UserContext);
 
   const handleClickButtonEdit = (e) => {
     e.preventDefault();
@@ -35,7 +37,7 @@ const UserInfo = ({ user, onUpdateUser }) => {
   const handleOut = () => {
     handleOpen("confirm", 'user');
   };
-  
+
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Tooltip title="Open settings">

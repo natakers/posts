@@ -3,12 +3,11 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import AdbIcon from "@mui/icons-material/AutoAwesome";
-import Registration from "../Registration/Registration";
 import UserInfo from "./UserInfo";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 
-const Header = ({ user, onUpdateUser }) => {
+const Header = ({ onUpdateUser }) => {
   const { token } = useContext(UserContext);
   console.log("header");
 
@@ -18,11 +17,7 @@ const Header = ({ user, onUpdateUser }) => {
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: "flex", mr: 1 }} />
           <Box sx={{ flexGrow: 1, display: "flex" }}></Box>
-          {token && user ? (
-            <UserInfo user={user} onUpdateUser={onUpdateUser} />
-          ) : (
-            <Registration />
-          )}
+          {token && <UserInfo onUpdateUser={onUpdateUser} /> }
         </Toolbar>
       </Container>
     </AppBar>

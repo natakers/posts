@@ -6,11 +6,20 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { ModalContext } from "../../context/modalContext";
 import { UserContext } from "../../context/userContext";
+import { useNavigate } from "react-router-dom";
 
 export const MainPage = ({ cards, onChangeSort, currentSort }) => {
   console.log("main");
-  const { currentUser, isLoading } = useContext(UserContext);
+
+  const { currentUser, isLoading, token } = useContext(UserContext);
   const { handleOpen } = useContext(ModalContext);
+
+  const navigate = useNavigate();
+  console.log(token);
+  if (!token) {
+    navigate("/login");  
+  }
+
   if (currentSort === "По дате") {
     cards = cards.sort((item, item1) => {
       if (item1.created_at.toLowerCase() < item.created_at.toLowerCase()) {

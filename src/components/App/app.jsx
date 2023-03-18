@@ -13,6 +13,7 @@ import { UserContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
 import ModalBase from "../Modal/ModalBase";
+import LoginPage from "../../pages/LoginPage/loginPage";
 
 const App = () => {
   console.log("app");
@@ -117,6 +118,7 @@ const App = () => {
   const handleDeleteUser = () => {
     setToken(null)
     localStorage.setItem("token", "");
+    setCurrentUser({})
   }
 
   return (
@@ -157,12 +159,9 @@ const App = () => {
               height: "100vh",
             }}
           >
-            {currentUser && (
               <Header
-                user={currentUser}
                 onUpdateUser={handleUpdateUser}
               ></Header>
-            )}
             <Container
               sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
             >
@@ -170,7 +169,7 @@ const App = () => {
                 <Route
                   index
                   element={
-                    token && <MainPage
+                    <MainPage
                       cards={cards}
                       onChangeSort={onChangeSort}
                       currentSort={currentSort}
@@ -178,6 +177,7 @@ const App = () => {
                   }
                 />
                 <Route path="/post/:postId" element={token && <PostPage />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Container>
