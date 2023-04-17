@@ -14,10 +14,11 @@ import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
 import ModalBase from "../Modal/ModalBase";
 import LoginPage from "../../pages/LoginPage/loginPage";
+import { useNavigate } from 'react-router-dom'
 
 const App = () => {
   console.log("app");
-
+  const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState({});
   const [currentPost, setCurrentPost] = useState(null);
   const [cards, setCards] = useState([]);
@@ -28,7 +29,7 @@ const App = () => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("");
   const [secondType, setsecondType] = useState("");
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   const handleClose = () => {
     setType("");
@@ -52,7 +53,7 @@ const App = () => {
         })
         .catch((err) => alert(err));
         setLoading(false);
-    }
+    } else  navigate('/login')
   }, [token]);
 
   function handleUpdateUser(userUpdate) {
@@ -125,6 +126,7 @@ const App = () => {
     setToken(null);
     localStorage.setItem("token", "");
     setCurrentUser({});
+    navigate('/login')
   };
 
   return (
