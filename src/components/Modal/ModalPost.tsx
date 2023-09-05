@@ -10,7 +10,7 @@ import api from "../../Api";
 import { PostProps } from "types/contexTypes";
 
 
-interface InputTypes {
+export interface PostPostProps {
   tags: string | string[];
   title: string;
   text: string;
@@ -21,9 +21,9 @@ const ModalPost = () => {
   const { handleClose, setCards, secondType } = useContext(ModalContext);
   const { currentPost, setCurrentPost } =
   useContext(PostContext);
-  const { register, handleSubmit, watch, formState: { errors },} = useForm<InputTypes>({ mode: "onChange", });
+  const { register, handleSubmit, watch, formState: { errors },} = useForm<PostPostProps>({ mode: "onChange", });
 
-  const onSubmit = async (data: InputTypes) => {
+  const onSubmit = async (data: PostPostProps) => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
     if (secondType === "create") { await api.postPost(data);  }
     if (secondType === "update" && currentPost) { await api.updatePost(currentPost._id, data) }
@@ -31,8 +31,6 @@ const ModalPost = () => {
     setCards(result);
     handleClose();
     if (secondType === "update" && currentPost) { setCurrentPost(result.filter((post: PostProps) => post._id === currentPost._id)[0]) }
-    console.log(currentPost);
-    
   };
 
   

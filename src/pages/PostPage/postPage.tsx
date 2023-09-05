@@ -18,7 +18,7 @@ const PostPage = ({token}: {token: string}) => {
     }
   }, [token]);
 
-  const handleGetPost = useCallback(() => api.getPostById(postId), [postId]);
+  const handleGetPost = useCallback(() => api.getPostById(postId ? postId : ''), [postId]);
   const { data: post } = useApi(handleGetPost);
   
 
@@ -29,7 +29,7 @@ const PostPage = ({token}: {token: string}) => {
             Назад
           </Button>
         </div>
-        {post ? <Post {...post} /> : <Spinner />}
+        {post ? <Post {...post} post={post} /> : <Spinner />}
       </Box>
   );
 };

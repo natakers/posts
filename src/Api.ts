@@ -1,14 +1,21 @@
-const onResponce = (res) => {
+import { PostPostProps } from "components/Modal/ModalPost";
+import { UserSignIn } from "components/Modal/ModalSignIn";
+import { UserSignUp } from "components/Modal/ModalSignUp";
+
+const onResponce = (res: Response) => {
   return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 };
 
 class Api {
-  constructor({ baseUrl, token }) {
+  _token: string;
+  _baseUrl: string;
+
+  constructor({ baseUrl }:{baseUrl: string}) {
     this._token = '';
     this._baseUrl = baseUrl;
   }
 
-  singUpUser(data) {
+  singUpUser(data: UserSignUp) {
     return fetch(`https://api.react-learning.ru/signup`, {
       method: "POST",
       headers: {
@@ -18,7 +25,7 @@ class Api {
     }).then(onResponce);
   }
 
-  singInUser(data) {
+  singInUser(data: UserSignIn) {
     return fetch(`https://api.react-learning.ru/signin`, {
       method: "POST",
       headers: {
@@ -45,7 +52,7 @@ class Api {
     }).then(onResponce);
   }
 
-  changeLikePostStatus(postID, like) {
+  changeLikePostStatus(postID: string, like: boolean) {
     // Обычная реализация: 2 разных метода для удаления и постановки лайка.
     return fetch(`${this._baseUrl}/posts/likes/${postID}`, {
       method: like ? "PUT" : "DELETE",
@@ -56,7 +63,7 @@ class Api {
     }).then(onResponce);
   }
 
-  deletePost(postID) {
+  deletePost(postID: string) {
     return fetch(`${this._baseUrl}/posts/${postID}`, {
       method: "DELETE",
       headers: {
@@ -65,7 +72,7 @@ class Api {
     }).then(onResponce);
   }
 
-  setUserInfo({ name, about }) {
+  setUserInfo({ name, about }: {name: string, about: string}) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: {
@@ -79,7 +86,7 @@ class Api {
     }).then(onResponce);
   }
 
-  setUserAvatar(avatar) {
+  setUserAvatar(avatar: string) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: {
@@ -92,7 +99,8 @@ class Api {
     }).then(onResponce);
   }
 
-  getPostById(postId) {
+  getPostById(postId: string) {
+    console.log('gdgdg');
     return fetch(`${this._baseUrl}/posts/${postId}`, {
       headers: {
         authorization: this._token,
@@ -101,7 +109,7 @@ class Api {
     }).then(onResponce)
   }
 
-  getUser(id) {
+  getUser(id: string) {
 		return fetch(`${this._baseUrl}/users/${id}`, {
 			headers: {
 				authorization: this._token,
@@ -109,7 +117,7 @@ class Api {
 		}).then(onResponce);
 	}
 
-  getComments(id) {
+  getComments(id: string) {
 		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
 			headers: {
 				authorization: this._token,
@@ -117,7 +125,7 @@ class Api {
 		}).then(onResponce);
 	}
 
-  postComment(id, text) {
+  postComment(id: string, text: string) {
 		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
       method: "POST",
 			headers: {
@@ -130,7 +138,7 @@ class Api {
 		}).then(onResponce);
 	}
 
-  postPost(data) {
+  postPost(data: PostPostProps) {
 		return fetch(`${this._baseUrl}/posts`, {
       method: "POST",
 			headers: {
@@ -141,7 +149,7 @@ class Api {
 		}).then(onResponce);
 	}
 
-  updatePost(id, data) {
+  updatePost(id: string, data: PostPostProps) {
 		return fetch(`${this._baseUrl}/posts/${id}`, {
       method: "PATCH",
 			headers: {
@@ -152,7 +160,7 @@ class Api {
 		}).then(onResponce);
 	}
 
-  deleteComment(postID, commentID) {
+  deleteComment(postID: string, commentID: string) {
     return fetch(`${this._baseUrl}/posts/comments/${postID}/${commentID}`, {
       method: "DELETE",
       headers: {
@@ -161,7 +169,7 @@ class Api {
     }).then(onResponce);
   }
 
-  getPostPagin(page, number) {
+  getPostPagin(page: number, number: number) {
     return fetch(`${this._baseUrl}/posts/paginate?page=${page}&limit=${number}`, {
       headers: {
         authorization: this._token,
@@ -172,7 +180,7 @@ class Api {
 
 
 
-const config = {
+const config: {baseUrl: string } = {
     baseUrl:'https://api.react-learning.ru/v2/group-10',
     // token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2UxMmRmNDU5Yjk4YjAzOGY3N2IyMjgiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc1NzAxNzgwLCJleHAiOjE3MDcyMzc3ODB9.zyudBlyMJGJX7MyT2kglcsfV5h-RFGpaT7KCgoV76Sw'
 }

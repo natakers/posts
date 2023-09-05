@@ -19,12 +19,12 @@ const ModalSignIn = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<InputTypes>({
+  } = useForm<UserSignIn>({
     mode: "onChange",
   });
   const navigate = useNavigate();
 
-  const onSubmit = async (data: InputTypes) => {
+  const onSubmit = async (data: UserSignIn) => {
     try {
       let result = await api.singInUser(data);
       console.log(result);
@@ -114,7 +114,7 @@ const ModalSignIn = () => {
 };
 export default ModalSignIn;
 
-interface InputTypes {
+export interface UserSignIn {
   password: string;
   email: string;
 }

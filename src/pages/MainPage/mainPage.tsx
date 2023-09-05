@@ -11,11 +11,13 @@ import { PostProps, UserContexProps } from "types/contexTypes";
 import CardList from "components/CardList/cardList";
 
 export const MainPage = ({ cards, onChangeSort, currentSort }: MainPageProps) => {
+  // console.log("main");
 
-  const { isLoading, token } = useContext<UserContexProps>(UserContext);
+  const { loading, token } = useContext<UserContexProps>(UserContext);
   const { handleOpen } = useContext(ModalContext);
 
   const navigate = useNavigate();
+  // console.log(token);
   if (!token) {
     navigate("/login");  
   }
@@ -45,7 +47,7 @@ export const MainPage = ({ cards, onChangeSort, currentSort }: MainPageProps) =>
         Создать пост
       </Button>
       </Box>
-      {!isLoading && cards && cards.length > 0 ? ( <CardList posts={cards} /> ) : ( <Spinner /> )}
+      {!loading && cards && cards.length > 0 ? ( <CardList posts={cards} /> ) : ( <Spinner /> )}
     </>
   );
 };

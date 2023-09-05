@@ -11,7 +11,7 @@ export const initialUser = {
 }
 const initialState = {
     user: initialUser, 
-    isLoading: false, 
+    loading: false, 
     handleUpdateUser: () => {},
     handleUpdateAvatar: () => {}, 
     token: '', 

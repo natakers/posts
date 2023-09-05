@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import api from "../../Api";
 import styles from "./modals.module.css";
 
-interface InputTypes {
+export interface UserSignUp {
   password: string;
   email: string;
   group: string
@@ -22,11 +22,11 @@ const ModalSignUp = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<InputTypes>({
+  } = useForm<UserSignUp>({
     mode: "onChange",
   });
 
-  const onSubmit = async (data: InputTypes) => {
+  const onSubmit = async (data: UserSignUp) => {
     console.log(data);
     try {
       let result = await api.singUpUser(data);

@@ -1,6 +1,6 @@
 export interface UserContexProps {
     user: UserProps | null, 
-    isLoading: boolean, 
+    loading: boolean, 
     handleUpdateUser: (userUpdate: UserUpdateProps) => void,
     handleUpdateAvatar: (avatar: string) => void, 
     token: string |null, 

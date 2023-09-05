@@ -16,13 +16,16 @@ import ModalBase from "../Modal/ModalBase";
 import LoginPage from "../../pages/LoginPage/loginPage";
 import { useNavigate } from 'react-router-dom'
 import type { CommentProps, PostProps, UserProps, UserUpdateProps } from "types/contexTypes";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { getPosts } from "redux/reducers/posts/post_action_creators";
+import { getUserInfo } from "redux/reducers/user/user_action_creators";
 
 const App = () => {
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState<UserProps | null>(null);
   const [currentPost, setCurrentPost] = useState<PostProps | null>(null);
   const [cards, setCards] = useState<PostProps[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(true);
   const [currentSort, setCurrentSort] = useState<string>("");
   const [currentComment, setCurrentComment] = useState<string>('');
   const [currentCommentList, setCurrentCommentList] = useState<CommentProps[]>([]);
@@ -31,6 +34,10 @@ const App = () => {
   const [secondType, setsecondType] = useState<string>("");
   const [token, setToken] = useState<string | null>(localStorage.getItem("tokenPosts"));
 
+  const {posts, loading } = useTypedSelector(state => state.posts)
+  const currentUserTK = useTypedSelector(state => state.user.user)
+  const dispatch = useAppDispatch()
+  
   const handleClose = () => {
     setType("");
     setOpen(false);
@@ -43,20 +50,16 @@ const App = () => {
   useEffect(() => {
     setToken(localStorage.getItem("tokenPosts"));
     if (token) {
-      setLoading(true);
       api._token = `Bearer ${token}`;
-      Promise.all([api.getPostList(), api.getUserInfo()])
-        .then(([poststData, userData]) => {
-          setCurrentUser(userData);
-          setCards(poststData);
-        })
-        .catch((err) => alert(err));
-        setLoading(false);
+      dispatch(getPosts())
+      dispatch(getUserInfo())
+      setCurrentUser(currentUserTK);
+      setCards(posts);
     } else navigate('/login')
+    // eslint-disable-next-line
   }, [token, navigate]);
 
   function handleUpdateUser(userUpdate: UserUpdateProps) {
-    setLoading(true);
     api
       .setUserInfo(userUpdate)
       .then((newUserData) => {
@@ -76,7 +79,6 @@ const App = () => {
         });
       })
       .catch((err) => alert(err));
-      setLoading(false);
   }
 
   function handlePostLike(post: PostProps) {
@@ -84,7 +86,7 @@ const App = () => {
     api
       .changeLikePostStatus(post._id, !isLiked)
       .then((newCard) => {
-        const newCards = cards.map((c) => {
+        const newCards = posts.map((c) => {
           return c._id === newCard._id ? newCard : c;
         });
         setCards(newCards);
@@ -94,7 +96,6 @@ const App = () => {
 
   const handlePostDelete = async () => {
     try {
-      setLoading(true);
       if (currentPost) {
         await api.deletePost(currentPost._id);
         const poststData = await api.getPostList();
@@ -104,12 +105,10 @@ const App = () => {
     } catch (error) {
       alert(error);
     }
-    setLoading(false);
   };
 
   const handleCommentDelete = async () => {
     try {
-      setLoading(true);
       if (currentPost) {
         await api.deleteComment(currentPost._id, currentComment);
         let result = await api.getComments(currentPost._id);
@@ -118,7 +117,6 @@ const App = () => {
     } catch (error) {
       alert(error);
     }
-    setLoading(false);
   };
 
   const onChangeSort = (id: string) => {
@@ -133,7 +131,7 @@ const App = () => {
   };
 
   return (
-    <UserContext.Provider value={{user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar, token, setToken, handleDeleteUser }}>
+    <UserContext.Provider value={{user: currentUser, loading, handleUpdateUser, handleUpdateAvatar, token, setToken, handleDeleteUser }}>
       <PostContext.Provider
         value={{handlePostLike,handlePostDelete,currentPost,setCurrentPost,handleCommentDelete,currentComment,setCurrentComment,currentCommentList,setCurrentCommentList}}>
         <ModalContext.Provider
