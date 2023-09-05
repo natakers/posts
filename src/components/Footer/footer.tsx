@@ -1,18 +1,19 @@
-import React from "react";
-import "./index.css";
+import React, { memo } from "react";
+import './index.css';
 
-const Footer = () => {
+const Footer = memo(() => {
 	return (
 		<footer className="footer">
 			<div className="container">
 				<div className="footer__wrapper">
 					<div className="footer__col">
-						2023
+						<p>Create by Nataliia Kersnovskaia</p>
+						<p>2023</p>	
 					</div>
 				</div>
 			</div>
 		</footer>
 	);
-};
+});
 
 export default Footer;

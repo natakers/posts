@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.erroe__form {
+  color: red;
+  font-size: 14px;
+  
+}
+.erroe__form > p {
+  margin: 5px 0;
+}
+  
