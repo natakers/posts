@@ -15,33 +15,33 @@ import { ModalContext } from "../../context/modalContext";
 import ModalBase from "../Modal/ModalBase";
 import LoginPage from "../../pages/LoginPage/loginPage";
 import { useNavigate } from 'react-router-dom'
+import type { CommentProps, PostProps, UserProps, UserUpdateProps } from "types/contexTypes";
 
 const App = () => {
-  console.log("app");
   const navigate = useNavigate()
-  const [currentUser, setCurrentUser] = useState({});
-  const [currentPost, setCurrentPost] = useState(null);
-  const [cards, setCards] = useState([]);
-  const [isLoading, setLoading] = useState(true);
-  const [currentSort, setCurrentSort] = useState("");
-  const [currentComment, setCurrentComment] = useState(null);
-  const [currentCommentList, setCurrentCommentList] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [type, setType] = useState("");
-  const [secondType, setsecondType] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [currentUser, setCurrentUser] = useState<UserProps | null>(null);
+  const [currentPost, setCurrentPost] = useState<PostProps | null>(null);
+  const [cards, setCards] = useState<PostProps[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const [currentSort, setCurrentSort] = useState<string>("");
+  const [currentComment, setCurrentComment] = useState<string>('');
+  const [currentCommentList, setCurrentCommentList] = useState<CommentProps[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
+  const [secondType, setsecondType] = useState<string>("");
+  const [token, setToken] = useState<string | null>(localStorage.getItem("tokenPosts"));
 
   const handleClose = () => {
     setType("");
     setOpen(false);
   };
-  const handleOpen = (type, secondType = "") => {
+  const handleOpen = (type: string, secondType = "") => {
     setType(type);
     setsecondType(secondType);
     setOpen(true);
   };
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
+    setToken(localStorage.getItem("tokenPosts"));
     if (token) {
       setLoading(true);
       api._token = `Bearer ${token}`;
@@ -49,14 +49,13 @@ const App = () => {
         .then(([poststData, userData]) => {
           setCurrentUser(userData);
           setCards(poststData);
-          
         })
         .catch((err) => alert(err));
         setLoading(false);
-    } else  navigate('/login')
-  }, [token]);
+    } else navigate('/login')
+  }, [token, navigate]);
 
-  function handleUpdateUser(userUpdate) {
+  function handleUpdateUser(userUpdate: UserUpdateProps) {
     setLoading(true);
     api
       .setUserInfo(userUpdate)
@@ -65,7 +64,7 @@ const App = () => {
       })
       .catch((err) => alert(err));
   }
-  function handleUpdateAvatar(avatar) {
+  function handleUpdateAvatar(avatar: string) {
     api
       .setUserAvatar(avatar)
       .then((newUserAvatar) => {
@@ -80,8 +79,8 @@ const App = () => {
       setLoading(false);
   }
 
-  function handlePostLike(post) {
-    const isLiked = post.likes.some((id) => id === currentUser._id); //ищем в массиве лайков id текущего пользователя;
+  function handlePostLike(post: PostProps) {
+    const isLiked = post.likes.some((id: string) => currentUser ? id === currentUser._id : ''); //ищем в массиве лайков id текущего пользователя;
     api
       .changeLikePostStatus(post._id, !isLiked)
       .then((newCard) => {
@@ -96,9 +95,11 @@ const App = () => {
   const handlePostDelete = async () => {
     try {
       setLoading(true);
-      await api.deletePost(currentPost._id);
-      const poststData = await api.getPostList();
-      setCards(poststData);
+      if (currentPost) {
+        await api.deletePost(currentPost._id);
+        const poststData = await api.getPostList();
+        setCards(poststData);
+      }
       
     } catch (error) {
       alert(error);
@@ -109,63 +110,34 @@ const App = () => {
   const handleCommentDelete = async () => {
     try {
       setLoading(true);
-      await api.deleteComment(currentPost._id, currentComment);
-      let result = await api.getComments(currentPost._id);
-      setCurrentCommentList(result.reverse());
+      if (currentPost) {
+        await api.deleteComment(currentPost._id, currentComment);
+        let result = await api.getComments(currentPost._id);
+        setCurrentCommentList(result.reverse());
+      }
     } catch (error) {
       alert(error);
     }
     setLoading(false);
   };
 
-  const onChangeSort = (id) => {
+  const onChangeSort = (id: string) => {
     setCurrentSort(id);
   };
 
   const handleDeleteUser = () => {
     setToken(null);
-    localStorage.setItem("token", "");
-    setCurrentUser({});
+    localStorage.setItem("tokenPosts", "");
+    setCurrentUser(null);
     navigate('/login')
   };
 
   return (
-    <UserContext.Provider
-      value={{
-        user: currentUser,
-        isLoading,
-        handleUpdateUser,
-        handleUpdateAvatar,
-        token,
-        setToken,
-        handleDeleteUser,
-      }}
-    >
+    <UserContext.Provider value={{user: currentUser, isLoading, handleUpdateUser, handleUpdateAvatar, token, setToken, handleDeleteUser }}>
       <PostContext.Provider
-        value={{
-          handlePostLike,
-          handlePostDelete,
-          currentPost,
-          setCurrentPost,
-          handleCommentDelete,
-          currentComment,
-          setCurrentComment,
-          currentCommentList,
-          setCurrentCommentList,
-        }}
-      >
+        value={{handlePostLike,handlePostDelete,currentPost,setCurrentPost,handleCommentDelete,currentComment,setCurrentComment,currentCommentList,setCurrentCommentList}}>
         <ModalContext.Provider
-          value={{
-            open,
-            setOpen,
-            handleOpen,
-            handleClose,
-            type,
-            secondType,
-            setType,
-            setCards,
-          }}
-        >
+          value={{open, setOpen, handleOpen, handleClose, type, secondType, setType, setCards}}>
           <Box
             sx={{
               width: "100%",
@@ -180,17 +152,8 @@ const App = () => {
               sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
             >
               <Routes>
-                <Route
-                  index
-                  element={
-                    <MainPage
-                      cards={cards}
-                      onChangeSort={onChangeSort}
-                      currentSort={currentSort}
-                    />
-                  }
-                />
-                <Route path="/post/:postId" element={token && <PostPage />} />
+                <Route index element={<MainPage cards={cards} onChangeSort={onChangeSort} currentSort={currentSort}/>}/>
+                <Route path="/post/:postId" element={token && <PostPage token={token} />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>

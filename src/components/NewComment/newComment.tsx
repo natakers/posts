@@ -16,7 +16,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const NewComment = () => {
   const { user: currentUser } = useContext(UserContext);
   const { currentPost, setCurrentCommentList } = useContext(PostContext);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState<string>('');
   const style = {
     backgroundColor: "#fff",
     color: "rgba(0, 0, 0, 0.87)",
@@ -30,44 +30,30 @@ const NewComment = () => {
 
   const handleClickAdd = async () => {
     try {
-      let result = await api.postComment(currentPost._id, comment);
-      setCurrentCommentList(result.comments.reverse())
-      setComment('')
-    } catch (error) {
-      alert(error);
-    }
+      if (currentPost) {
+        let result = await api.postComment(currentPost._id, comment);
+        setCurrentCommentList(result.comments.reverse())
+        setComment('')
+      }
+    } catch (error) { alert(error); }
   }
-
-  const handleClickClean = () => {
-    setComment('')
-  }
+  const handleClickClean = () => {setComment('')}
   return (
     <Box sx={ style }>
       <Tooltip title="Open settings">
-        <Avatar alt="avatar" src={currentUser.avatar} />
+        <Avatar alt="avatar" src={currentUser ? currentUser.avatar : ''} />
       </Tooltip>
-      <TextField
-        sx={{ m: "0.5rem" }}
-        placeholder="Текст комментария"
-        multiline
-        maxRows={4}
-        value={comment}
-        onInput={(e) => {
+      <TextField sx={{ m: "0.5rem" }} placeholder="Текст комментария" multiline maxRows={4} value={comment}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           setComment(e.target.value);
         }}
       />
-      <IconButton
-          aria-label=""
-          onClick={handleClickAdd}
-        >
-          <SaveIcon />
-        </IconButton>
-      <IconButton
-          aria-label=""
-          onClick={handleClickClean}
-        >
-          <HighlightOffIcon />
-        </IconButton>
+      <IconButton aria-label="" onClick={handleClickAdd}>
+        <SaveIcon />
+      </IconButton>
+      <IconButton aria-label="" onClick={handleClickClean}>
+        <HighlightOffIcon />
+      </IconButton>
     </Box>
   );
 };

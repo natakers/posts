@@ -11,11 +11,11 @@ const theme1 = createTheme({
     },
   },
 });
-const Sort = memo(({ onChangeSort }) => {
+const Sort: React.FC<{onChangeSort: (id: string) => void}> = memo(({ onChangeSort }) => {
   console.log("sort");
   const [alignment, setAlignment] = useState("По дате");
 
-  const handleChange = (event, newAlignment) => {
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     console.log(newAlignment);
     onChangeSort(newAlignment);
     setAlignment(newAlignment);

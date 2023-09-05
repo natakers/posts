@@ -6,29 +6,35 @@ import TextField from "@mui/material/TextField";
 import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
 import api from "../../Api";
+import { UserContext } from "../../context/userContext";
 import styles from "./modals.module.css";
+import { useNavigate } from "react-router-dom";
 
-const ModalSignUp = () => {
-  const { handleClose, handleOpen } = useContext(ModalContext);
+const ModalSignIn = () => {
+  const { handleClose } = useContext(ModalContext);
+  const { setToken } = useContext(UserContext);
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<InputTypes>({
     mode: "onChange",
   });
+  const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onSubmit = async (data: InputTypes) => {
     try {
-      let result = await api.singUpUser(data);
+      let result = await api.singInUser(data);
       console.log(result);
-      handleOpen("signIn");
+      localStorage.setItem("tokenPosts", result.token);
+      setToken(result.token);
+      navigate("/");
     } catch (error) {
       alert(error);
-      handleClose();
     }
+    handleClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -38,8 +44,9 @@ const ModalSignUp = () => {
         variant="h6"
         component="h2"
       >
-        Регистрация
+        Авторизация
       </Typography>
+
       <TextField
         sx={{ width: "100%", mb: 2 }}
         size="small"
@@ -56,27 +63,11 @@ const ModalSignUp = () => {
           },
         })}
         type="text"
-        value={register("email").value}
+        value={watch("email")}
         onChange={register("email").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.email && <p>{errors?.email?.message}</p>}
-      </div>
-      <TextField
-        sx={{ width: "100%", mb: 2 }}
-        placeholder="Группа"
-        label="Группа"
-        id="postText"
-        variant="outlined"
-        {...register("group", {
-          required: "Обязательное поле",
-        })}
-        type="text"
-        value={register("group").value}
-        onChange={register("group").onChange}
-      />
-      <div className={styles.erroe__form}>
-        {errors?.group && <p>{errors?.group?.message}</p>}
       </div>
       <TextField
         sx={{ width: "100%", mb: 2 }}
@@ -89,7 +80,7 @@ const ModalSignUp = () => {
           required: "Обязательное поле",
         })}
         type="password"
-        value={register("password").value}
+        value={watch("password")}
         onChange={register("password").onChange}
       />
       <div className={styles.erroe__form}>
@@ -104,7 +95,7 @@ const ModalSignUp = () => {
             ":hover": { bgcolor: "#58641a", color: "white" },
           }}
         >
-          Зарегистрироваться
+          Войти
         </Button>
         <Button
           onClick={handleClose}
@@ -121,4 +112,9 @@ const ModalSignUp = () => {
     </form>
   );
 };
-export default ModalSignUp;
+export default ModalSignIn;
+
+interface InputTypes {
+  password: string;
+  email: string;
+}

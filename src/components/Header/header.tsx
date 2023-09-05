@@ -6,8 +6,9 @@ import AdbIcon from "@mui/icons-material/AutoAwesome";
 import UserInfo from "./UserInfo";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
+import { UserUpdateProps } from "types/contexTypes";
 
-const Header = ({ onUpdateUser }) => {
+const Header: React.FC<{onUpdateUser: (userUpdate: UserUpdateProps) => void}> = ({ onUpdateUser }) => {
   const { token } = useContext(UserContext);
   console.log("header");
 

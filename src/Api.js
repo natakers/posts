@@ -1,6 +1,4 @@
 const onResponce = (res) => {
-  console.log(res);
-  console.log(api._token);
   return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 };
 
@@ -59,7 +57,6 @@ class Api {
   }
 
   deletePost(postID) {
-    console.log(postID);
     return fetch(`${this._baseUrl}/posts/${postID}`, {
       method: "DELETE",
       headers: {
@@ -83,7 +80,6 @@ class Api {
   }
 
   setUserAvatar(avatar) {
-    console.log({avatar});
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: {
@@ -157,7 +153,6 @@ class Api {
 	}
 
   deleteComment(postID, commentID) {
-    console.log(postID);
     return fetch(`${this._baseUrl}/posts/comments/${postID}/${commentID}`, {
       method: "DELETE",
       headers: {

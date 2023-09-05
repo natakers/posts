@@ -9,7 +9,7 @@ import ModalSignUp from "./ModalSignUp";
 import ModalSignIn from "./ModalSignIn";
 
 const ModalBase = () => {
-  const { open, handleClose, type, secondType } = useContext(ModalContext);
+  const { open, handleClose, type } = useContext(ModalContext);
   const style = {
     position: "absolute",
     top: "50%",
@@ -33,8 +33,8 @@ const ModalBase = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {type === "confirm" && <ModalConfirm type={secondType}/>}
-          {type === "post_modal" && <ModalPost type={secondType} />}
+          {type === "confirm" && <ModalConfirm />}
+          {type === "post_modal" && <ModalPost />}
           {type === "update_user" && <ModalUpdateUser />}
           {type === "signUp" && <ModalSignUp />}
           {type === "signIn" && <ModalSignIn />}

@@ -6,82 +6,68 @@ import TextField from "@mui/material/TextField";
 import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
 import api from "../../Api";
-import { UserContext } from "../../context/userContext";
 import styles from "./modals.module.css";
-import { useNavigate } from "react-router-dom";
 
-const ModalSignIn = () => {
-  const { handleClose } = useContext(ModalContext);
-  const { setToken } = useContext(UserContext);
+interface InputTypes {
+  password: string;
+  email: string;
+  group: string
+}
+
+const ModalSignUp = () => {
+  const { handleClose, handleOpen } = useContext(ModalContext);
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<InputTypes>({
     mode: "onChange",
   });
-  const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: InputTypes) => {
     console.log(data);
     try {
-      let result = await api.singInUser(data);
+      let result = await api.singUpUser(data);
       console.log(result);
-      localStorage.setItem("token", result.token);
-      setToken(result.token);
-      navigate("/");
+      handleOpen("signIn");
     } catch (error) {
       alert(error);
+      handleClose();
     }
-    handleClose();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Typography
-        sx={{ mb: 3, color: "#013f4e" }}
-        id="modal-modal-title"
-        variant="h6"
-        component="h2"
-      >
-        Авторизация
+      <Typography sx={{ mb: 3, color: "#013f4e" }} id="modal-modal-title" variant="h6" component="h2">
+        Регистрация
       </Typography>
-
-      <TextField
-        sx={{ width: "100%", mb: 2 }}
-        size="small"
-        placeholder="Email"
-        label="Email"
-        id="postName"
-        variant="outlined"
+      <TextField sx={{ width: "100%", mb: 2 }} size="small" placeholder="Email" label="Email" id="postName" variant="outlined"
         {...register("email", {
           required: "Обязательное поле",
           pattern: {
-            value:
-              /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu,
+            value: /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu,
             message: "Введите валидный адрес электронной почты.",
           },
         })}
-        type="text"
-        value={register("email").value}
-        onChange={register("email").onChange}
+        type="text"  value={watch("email")} onChange={register("email").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.email && <p>{errors?.email?.message}</p>}
       </div>
-      <TextField
-        sx={{ width: "100%", mb: 2 }}
-        placeholder="Пароль"
-        size="small"
-        label="Пароль"
-        id="postText"
-        variant="outlined"
+      <TextField sx={{ width: "100%", mb: 2 }} placeholder="Группа" label="Группа" id="postText" variant="outlined" {...register("group", {
+          required: "Обязательное поле",
+        })}
+        type="text" value={watch("group")} onChange={register("group").onChange}
+      />
+      <div className={styles.erroe__form}>
+        {errors?.group && <p>{errors?.group?.message}</p>}
+      </div>
+      <TextField sx={{ width: "100%", mb: 2 }} placeholder="Пароль" size="small" label="Пароль" id="postText" variant="outlined"
         {...register("password", {
           required: "Обязательное поле",
         })}
-        type="password"
-        value={register("password").value}
-        onChange={register("password").onChange}
+        type="password" value={watch("password")} onChange={register("password").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.password && <p>{errors?.password?.message}</p>}
@@ -95,7 +81,7 @@ const ModalSignIn = () => {
             ":hover": { bgcolor: "#58641a", color: "white" },
           }}
         >
-          Войти
+          Зарегистрироваться
         </Button>
         <Button
           onClick={handleClose}
@@ -112,4 +98,4 @@ const ModalSignIn = () => {
     </form>
   );
 };
-export default ModalSignIn;
+export default ModalSignUp;

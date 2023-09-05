@@ -14,87 +14,44 @@ import Delete from "@mui/icons-material/Delete";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import "moment/locale/ru";
-import { useContext } from "react";
+import { MouseEvent, useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
+import { PostProps } from "types/contexTypes";
 
-const PostCard = ({
-  post,
-  title,
-  text,
-  image,
-  tags,
-  author,
-  likes,
-  created_at,
-  _id,
-}) => {
-  console.log("card");
-  const { handlePostLike: onPostLike, setCurrentPost } =
-    useContext(PostContext);
+const PostCard: React.FC<PostProps> = (post) => {
+  const { handlePostLike: onPostLike, setCurrentPost } = useContext(PostContext);
   const { user: currentUser } = useContext(UserContext);
   const { handleOpen } = useContext(ModalContext);
-  const liked = isLiked(likes, currentUser._id);
-
-  function handleLikeClick(e) {
+  const liked = isLiked(post.likes, currentUser ? currentUser._id : '');
+  
+  function handleLikeClick(e: MouseEvent) {
     e.stopPropagation();
     onPostLike(post);
   }
-
-  function handleDeleteClick(e) {
+  function handleDeleteClick(e: MouseEvent) {
     e.stopPropagation();
     handleOpen("confirm", 'post');
     setCurrentPost(post);
   }
-
   return (
-    <Card
-      sx={{
-        maxWidth: 345,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
-      <Link to={`/post/${_id}`} className="card__link">
-        <CardHeader
-          avatar={<Avatar src={author.avatar} aria-label="recipe"></Avatar>}
-          title={title}
-          subheader={moment(created_at).format("LL")}
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image={image}
-          alt={title}
-        />
+    <Card sx={{ maxWidth: 345, display: "flex", flexDirection: "column", justifyContent: "space-between", }}>
+      <Link to={`/post/${post._id}`} className="card__link">
+        <CardHeader avatar={<Avatar src={post.author.avatar} aria-label="recipe"></Avatar>} title={post.title} subheader={moment(post.created_at).format("LL")}/>
+        <CardMedia component="img" height="194" image={post.image} alt={post.title}/>
         <CardContent>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {text}
+          <Typography variant="body2" color="text.secondary" sx={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", }}>
+            {post.text}
           </Typography>
         </CardContent>
       </Link>
       <CardActions disableSpacing sx={{ justifyContent: "space-between" }}>
-        <IconButton
-          aria-label="add to favorites"
-          onClick={(e) => handleLikeClick(e)}
-        >
+        <IconButton aria-label="add to favorites" onClick={(e) => handleLikeClick(e)}>
           {liked ? <FavoriteIcon /> : <FavoriteBorder />}
-          {likes.length}
+          {post.likes.length}
         </IconButton>
-        <IconButton
-          aria-label="add to favorites"
-          onClick={(e) => handleDeleteClick(e)}
-        >
+        <IconButton aria-label="add to favorites" onClick={(e) => handleDeleteClick(e)}>
           <Delete />
         </IconButton>
       </CardActions>
@@ -103,3 +60,4 @@ const PostCard = ({
 };
 
 export default PostCard;
+
