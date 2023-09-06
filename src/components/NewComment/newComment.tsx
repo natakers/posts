@@ -4,17 +4,18 @@ import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import "moment/locale/ru";
 import { useContext } from "react";
-import { UserContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import { useState } from "react";
 import api from "../../Api";
 import IconButton from "@mui/material/IconButton";
 import SaveIcon from '@mui/icons-material/Save';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 
 const NewComment = () => {
-  const { user: currentUser } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const { currentPost, setCurrentCommentList } = useContext(PostContext);
   const [comment, setComment] = useState<string>('');
   const style = {

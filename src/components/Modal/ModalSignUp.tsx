@@ -20,7 +20,6 @@ const ModalSignUp = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<UserSignUp>({
     mode: "onChange",
@@ -50,7 +49,7 @@ const ModalSignUp = () => {
             message: "Введите валидный адрес электронной почты.",
           },
         })}
-        type="text"  value={watch("email")} onChange={register("email").onChange}
+        type="text" onChange={register("email").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.email && <p>{errors?.email?.message}</p>}
@@ -58,7 +57,7 @@ const ModalSignUp = () => {
       <TextField sx={{ width: "100%", mb: 2 }} placeholder="Группа" label="Группа" id="postText" variant="outlined" {...register("group", {
           required: "Обязательное поле",
         })}
-        type="text" value={watch("group")} onChange={register("group").onChange}
+        type="text" onChange={register("group").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.group && <p>{errors?.group?.message}</p>}
@@ -67,7 +66,7 @@ const ModalSignUp = () => {
         {...register("password", {
           required: "Обязательное поле",
         })}
-        type="password" value={watch("password")} onChange={register("password").onChange}
+        type="password" onChange={register("password").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.password && <p>{errors?.password?.message}</p>}

@@ -5,19 +5,17 @@ import Sort from "../../components/Sort/sort";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { ModalContext } from "../../context/modalContext";
-import { UserContext } from "../../context/userContext";
 import { useNavigate } from "react-router-dom";
-import { PostProps, UserContexProps } from "types/contexTypes";
+import { PostProps } from "types/contexTypes";
 import CardList from "components/CardList/cardList";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
-export const MainPage = ({ cards, onChangeSort, currentSort }: MainPageProps) => {
-  // console.log("main");
-
-  const { loading, token } = useContext<UserContexProps>(UserContext);
+export const MainPage = ({ token, cards, onChangeSort, currentSort }: MainPageProps) => {
   const { handleOpen } = useContext(ModalContext);
+  const { error, loading } = useTypedSelector(state => state.posts)
 
   const navigate = useNavigate();
-  // console.log(token);
+
   if (!token) {
     navigate("/login");  
   }
@@ -47,7 +45,7 @@ export const MainPage = ({ cards, onChangeSort, currentSort }: MainPageProps) =>
         Создать пост
       </Button>
       </Box>
-      {!loading && cards && cards.length > 0 ? ( <CardList posts={cards} /> ) : ( <Spinner /> )}
+      {(!loading && cards && cards.length > 0 ) ? ( <CardList posts={cards} /> ) : ( (error === '') ? <Spinner /> : <div>{error}</div> )}
     </>
   );
 };
@@ -55,5 +53,6 @@ export const MainPage = ({ cards, onChangeSort, currentSort }: MainPageProps) =>
 interface MainPageProps {
   cards: Array<PostProps>, 
   onChangeSort: (id: string) => void, 
-  currentSort: string
+  currentSort: string,
+  token: string | null
 }

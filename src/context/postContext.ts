@@ -1,6 +1,14 @@
 import { createContext } from 'react';
-import { initialUser } from './userContext';
 import type { CommentProps, PostContexProps, PostProps } from 'types/contexTypes';
+
+export const initialUser = {
+  name: '',
+  email: '',
+  avatar: '',
+  about: '',
+  group: '',
+  _id: ''
+}
 
 export const initialComment = {
   author: initialUser,

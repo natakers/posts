@@ -8,6 +8,9 @@ import { PostContext } from "../../context/postContext";
 import { useForm } from "react-hook-form";
 import api from "../../Api";
 import { PostProps } from "types/contexTypes";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { getPosts } from "redux/reducers/posts/post_action_creators";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 
 export interface PostPostProps {
@@ -18,19 +21,20 @@ export interface PostPostProps {
 }
 
 const ModalPost = () => {
-  const { handleClose, setCards, secondType } = useContext(ModalContext);
+  const { handleClose, secondType } = useContext(ModalContext);
   const { currentPost, setCurrentPost } =
   useContext(PostContext);
-  const { register, handleSubmit, watch, formState: { errors },} = useForm<PostPostProps>({ mode: "onChange", });
+  const { register, handleSubmit, formState: { errors },} = useForm<PostPostProps>({ mode: "onChange", });
+  const dispatch = useAppDispatch()
+  const { posts } = useTypedSelector(state => state.posts)
 
   const onSubmit = async (data: PostPostProps) => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
     if (secondType === "create") { await api.postPost(data);  }
     if (secondType === "update" && currentPost) { await api.updatePost(currentPost._id, data) }
-    let result = await api.getPostList();
-    setCards(result);
+    dispatch(getPosts())
     handleClose();
-    if (secondType === "update" && currentPost) { setCurrentPost(result.filter((post: PostProps) => post._id === currentPost._id)[0]) }
+    if (secondType === "update" && currentPost) { setCurrentPost(posts.filter((post: PostProps) => post._id === currentPost._id)[0]) }
   };
 
   
@@ -43,8 +47,6 @@ const ModalPost = () => {
         defaultValue={(currentPost && secondType === "update") ? currentPost.title : ''}
         { ...register("title", { required: "Обязательное поле", minLength: { value: 2, message: "Минимальная длина - 2 символа", },})}
         type="text"
-        value={ watch("title")
-       }
         onChange={register("title").onChange}
       />
       <div className="erroe__form">
@@ -52,7 +54,7 @@ const ModalPost = () => {
       </div>
       <TextField sx={{ width: "100%", mt: 2 }} placeholder="Текст поста" multiline rows={2} maxRows={4} label="Текст поста" id="postText" variant="outlined"
         defaultValue={(currentPost && secondType === "update") ? currentPost.text : ''}
-        {...register("text", { required: "Обязательное поле", })} type="text" value={watch("text")} onChange={register("text").onChange}/>
+        {...register("text", { required: "Обязательное поле", })} type="text" onChange={register("text").onChange}/>
       <div className="erroe__form">
         {errors?.text && <p>{errors?.text?.message}</p>}
       </div>
@@ -61,7 +63,7 @@ const ModalPost = () => {
         defaultValue={(currentPost && secondType === "update") ? currentPost.image : ''}
         {...register("image", { required: "Обязательное поле", pattern: { value: /(^https?:\/\/)?[a-z0-9~_\-.]+\.[a-z]{2,9}(\/|:|\?[!-~]*)?$/i,
             message: "Поле должно быть валидным url-адресом",},})}
-        type="text" value={watch("image")} onChange={register("image").onChange}
+        type="text" onChange={register("image").onChange}
       />
       <div className="erroe__form">
         {errors?.image && <p>{errors?.image?.message}</p>}
@@ -69,7 +71,7 @@ const ModalPost = () => {
       <TextField sx={{ mt: 3, width: "100%" }} placeholder="Напишите тэги через пробел" size="small" label="Напишите тэги через пробел" id="postText"
         variant="outlined" defaultValue={(currentPost && secondType === "update") ? currentPost.tags.join(' ') : ''}
         {...register("tags", { required: "Обязательное поле",
-        })} type="text" value={watch("tags")} onChange={register("tags").onChange} />
+        })} type="text" onChange={register("tags").onChange} />
       <div className="erroe__form">
         {errors?.tags && <p>{errors?.tags?.message}</p>}
       </div>

@@ -15,14 +15,15 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import "moment/locale/ru";
 import { MouseEvent, useContext } from "react";
-import { UserContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
 import { PostProps } from "types/contexTypes";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 const PostCard: React.FC<PostProps> = (post) => {
   const { handlePostLike: onPostLike, setCurrentPost } = useContext(PostContext);
-  const { user: currentUser } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const { handleOpen } = useContext(ModalContext);
   const liked = isLiked(post.likes, currentUser ? currentUser._id : '');
   

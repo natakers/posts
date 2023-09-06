@@ -8,7 +8,6 @@ const initialState = {
         handleOpen: () => {}, 
         secondType: '', 
         setType: () => {}, 
-        setCards: () => {},
         handleClose: () => {}, 
 }
 

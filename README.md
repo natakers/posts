@@ -1,1 +1,1 @@
-# Добавлен TypeScript в проект
+# Добавлен TypeScript в проект + Redux Toolkit

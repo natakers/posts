@@ -4,13 +4,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import AdbIcon from "@mui/icons-material/AutoAwesome";
 import UserInfo from "./UserInfo";
-import { useContext } from "react";
-import { UserContext } from "../../context/userContext";
-import { UserUpdateProps } from "types/contexTypes";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
-const Header: React.FC<{onUpdateUser: (userUpdate: UserUpdateProps) => void}> = ({ onUpdateUser }) => {
-  const { token } = useContext(UserContext);
-  console.log("header");
+const Header = () => {
+  const { token }: UsersState = useTypedSelector(state => state.user)
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#013f4e" }}>
@@ -18,7 +16,7 @@ const Header: React.FC<{onUpdateUser: (userUpdate: UserUpdateProps) => void}> = 
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: "flex", mr: 1 }} />
           <Box sx={{ flexGrow: 1, display: "flex" }}></Box>
-          {token && <UserInfo onUpdateUser={onUpdateUser} /> }
+          {token && <UserInfo/> }
         </Toolbar>
       </Container>
     </AppBar>

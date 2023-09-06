@@ -18,19 +18,20 @@ export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {},
-    extraReducers: {
-        [getPosts.fulfilled.type]: (state, action: PayloadAction<PostProps[]>) => {
+    extraReducers: (builder) => {
+        builder
+        .addCase(getPosts.fulfilled.type, (state, action: PayloadAction<PostProps[]>) => {
             state.loading = false;
             state.error = '';
             state.posts = action.payload;
-        },
-        [getPosts.pending.type]: (state) => {
+        })
+        .addCase(getPosts.pending.type, (state) => {
             state.loading = true;
-        },
-        [getPosts.rejected.type]: (state, action: PayloadAction<string>) => {
+        })
+        .addCase(getPosts.rejected.type, (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.error = action.payload;
-        }
+        })
     }
 })
 

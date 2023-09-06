@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { PostContext } from "../../context/postContext";
 import { ModalContext } from "../../context/modalContext";
-import { UserContext } from "../../context/userContext";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { UsersState, exitUser } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 
 const ModalConfirm = () => {
@@ -14,9 +16,15 @@ const ModalConfirm = () => {
   const { handlePostDelete: onPostDelete, currentPost, handleCommentDelete } =
     useContext(PostContext);
   const { handleClose, secondType } = useContext(ModalContext);
-  const { handleDeleteUser } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
+  const dispatch = useAppDispatch()
 
   let location = useLocation();
+
+  const handleDeleteUser = () => {
+    if (currentUser) {dispatch(exitUser())
+    navigate('/login')}
+  };
 
   function handleDel(e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation();

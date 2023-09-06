@@ -1,6 +1,7 @@
 import { PostPostProps } from "components/Modal/ModalPost";
 import { UserSignIn } from "components/Modal/ModalSignIn";
 import { UserSignUp } from "components/Modal/ModalSignUp";
+import axios from "axios";
 
 const onResponce = (res: Response) => {
   return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
@@ -16,40 +17,41 @@ class Api {
   }
 
   singUpUser(data: UserSignUp) {
-    return fetch(`https://api.react-learning.ru/signup`, {
-      method: "POST",
+    return axios.post(`https://api.react-learning.ru/signup`, 
+    data,
+    {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
-    }).then(onResponce);
+      
+    })
   }
 
   singInUser(data: UserSignIn) {
-    return fetch(`https://api.react-learning.ru/signin`, {
-      method: "POST",
+    return axios.post(`https://api.react-learning.ru/signin`, 
+    data,
+    { 
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
     })
-    .then(onResponce);
+    
   }
 
   getUserInfo() {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return axios.get(`${this._baseUrl}/users/me`, {
       headers: {
         authorization: this._token,
       },
-    }).then(onResponce);
+    })
   }
 
   getPostList() {
-    return fetch(`${this._baseUrl}/posts`, {
+    return axios.get(`${this._baseUrl}/posts`, {
       headers: {
         authorization: this._token,
       },
-    }).then(onResponce);
+    })
   }
 
   changeLikePostStatus(postID: string, like: boolean) {
@@ -73,30 +75,25 @@ class Api {
   }
 
   setUserInfo({ name, about }: {name: string, about: string}) {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
+    return axios.patch(`${this._baseUrl}/users/me`, 
+    { name, about },
+    {
       headers: {
         authorization: this._token,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name,
-        about,
-      }),
-    }).then(onResponce);
+      
+    })
   }
 
   setUserAvatar(avatar: string) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
-      method: "PATCH",
+    return axios.patch(`${this._baseUrl}/users/me/avatar`, 
+    {avatar},
+    {
       headers: {
         authorization: this._token,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        avatar
-      }),
-    }).then(onResponce);
+    })
   }
 
   getPostById(postId: string) {
@@ -110,11 +107,11 @@ class Api {
   }
 
   getUser(id: string) {
-		return fetch(`${this._baseUrl}/users/${id}`, {
+		return axios.get(`${this._baseUrl}/users/${id}`, {
 			headers: {
 				authorization: this._token,
 			},
-		}).then(onResponce);
+		})
 	}
 
   getComments(id: string) {

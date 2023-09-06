@@ -14,14 +14,15 @@ import 'moment/locale/ru';
 import { isLiked } from '../../utils';
 import { useEffect, useState } from 'react';
 import { useContext } from 'react';
-import { UserContext } from '../../context/userContext';
 import { PostContext } from '../../context/postContext';
 import { ModalContext } from '../../context/modalContext';
 import EditIcon from '@mui/icons-material/Edit';
 import { PostProps } from 'types/contexTypes';
+import { UsersState } from 'redux/reducers/user/userSlice';
+import { useTypedSelector } from 'hooks/useTypedSelector';
 
 export const Post = (post: PostProps) => {
-  const { user: currentUser } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const {
     handlePostLike: onPostLike,
     setCurrentPost,
