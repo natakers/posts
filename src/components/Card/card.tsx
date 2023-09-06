@@ -6,35 +6,29 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import Delete from "@mui/icons-material/Delete";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import "moment/locale/ru";
 import { MouseEvent, useContext } from "react";
-import { PostContext } from "../../context/postContext";
-import { ModalContext } from "../../context/modalContext";
 import { PostProps } from "types/contexTypes";
 import { UsersState } from "redux/reducers/user/userSlice";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import Like from "components/IconsButton/Like";
+import DeleteButton from "components/IconsButton/Delete";
+import { ModalContext } from 'context/modalContext';
+import { setCurrentPost } from "redux/reducers/posts/postsSlice";
+import { useAppDispatch } from "hooks/useAppDispatch";
 
 const PostCard: React.FC<PostProps> = (post) => {
-  const { handlePostLike: onPostLike, setCurrentPost } = useContext(PostContext);
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
+  const dispatch = useAppDispatch()
+  let liked = isLiked(post.likes, currentUser ? currentUser._id : '');
   const { handleOpen } = useContext(ModalContext);
-  const liked = isLiked(post.likes, currentUser ? currentUser._id : '');
-  
-  function handleLikeClick(e: MouseEvent) {
-    e.stopPropagation();
-    onPostLike(post);
-  }
   function handleDeleteClick(e: MouseEvent) {
+    dispatch(setCurrentPost(post))
     e.stopPropagation();
     handleOpen("confirm", 'post');
-    setCurrentPost(post);
   }
   return (
     <Card sx={{ maxWidth: 345, display: "flex", flexDirection: "column", justifyContent: "space-between", }}>
@@ -48,13 +42,8 @@ const PostCard: React.FC<PostProps> = (post) => {
         </CardContent>
       </Link>
       <CardActions disableSpacing sx={{ justifyContent: "space-between" }}>
-        <IconButton aria-label="add to favorites" onClick={(e) => handleLikeClick(e)}>
-          {liked ? <FavoriteIcon /> : <FavoriteBorder />}
-          {post.likes.length}
-        </IconButton>
-        <IconButton aria-label="add to favorites" onClick={(e) => handleDeleteClick(e)}>
-          <Delete />
-        </IconButton>
+        <Like liked={liked} post={post} length={post.likes.length}/>
+        {post.author._id === currentUser?._id &&<DeleteButton callback={(e: React.MouseEvent<HTMLElement>) => handleDeleteClick(e)}/>}
       </CardActions>
     </Card>
   );

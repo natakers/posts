@@ -5,20 +5,19 @@ import Avatar from "@mui/material/Avatar";
 import moment from "moment";
 import "moment/locale/ru";
 import { ModalContext } from "../../context/modalContext";
-import { PostContext } from "../../context/postContext";
-import IconButton from "@mui/material/IconButton";
-import Delete from "@mui/icons-material/Delete";
 import { CommentProps } from "types/contexTypes";
+import { setCurrentComment } from "redux/reducers/comments/commentsSlice";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import DeleteButton from "components/IconsButton/Delete";
 
 const Comment: React.FC<CommentProps> = ( comment) => {
   const { handleOpen } = useContext(ModalContext);
-  const { setCurrentComment } = useContext(PostContext);
+  const dispatch = useAppDispatch()
 
-  const handleDeleteComment = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setCurrentComment(comment._id);
-    handleOpen("confirm", "comment");
-  };
+  const handleDeleteComment = (comment: CommentProps) => {
+    dispatch(setCurrentComment(comment))
+    handleOpen("confirm", "comment")
+  }
 
   return (
     <Box
@@ -32,9 +31,7 @@ const Comment: React.FC<CommentProps> = ( comment) => {
           <Typography variant="body2" color="text.secondary"> {comment.text} </Typography>
         </Box>
       </Box>
-      <IconButton aria-label="add to favorites" onClick={(e) => handleDeleteComment(e)}>
-        <Delete />
-      </IconButton>
+      <DeleteButton callback={() => handleDeleteComment(comment)}/>
     </Box>
   );
 };

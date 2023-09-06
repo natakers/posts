@@ -54,24 +54,24 @@ class Api {
     })
   }
 
-  changeLikePostStatus(postID: string, like: boolean) {
+  changeLikePostStatus(postID:string, like:boolean) {
     // Обычная реализация: 2 разных метода для удаления и постановки лайка.
-    return fetch(`${this._baseUrl}/posts/likes/${postID}`, {
-      method: like ? "PUT" : "DELETE",
+    return axios({
+      method: `${like ? "PUT" : "DELETE"}`,
+      url: `${this._baseUrl}/posts/likes/${postID}`,
       headers: {
         authorization: this._token,
-        "Content-Type": "application/json",
       },
-    }).then(onResponce);
+    });   
   }
 
   deletePost(postID: string) {
-    return fetch(`${this._baseUrl}/posts/${postID}`, {
+    return axios.delete(`${this._baseUrl}/posts/${postID}`, {
       method: "DELETE",
       headers: {
         authorization: this._token,
       },
-    }).then(onResponce);
+    })
   }
 
   setUserInfo({ name, about }: {name: string, about: string}) {
@@ -97,13 +97,12 @@ class Api {
   }
 
   getPostById(postId: string) {
-    console.log('gdgdg');
-    return fetch(`${this._baseUrl}/posts/${postId}`, {
+    return axios.get(`${this._baseUrl}/posts/${postId}`, {
       headers: {
         authorization: this._token,
         "Content-Type": "application/json",
         }
-    }).then(onResponce)
+    })
   }
 
   getUser(id: string) {
@@ -115,55 +114,53 @@ class Api {
 	}
 
   getComments(id: string) {
-		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
+		return axios.get(`${this._baseUrl}/posts/comments/${id}`, {
 			headers: {
 				authorization: this._token,
 			},
-		}).then(onResponce);
+		});
 	}
 
   postComment(id: string, text: string) {
-		return fetch(`${this._baseUrl}/posts/comments/${id}`, {
-      method: "POST",
+		return axios.post(`${this._baseUrl}/posts/comments/${id}`, 
+    {text},
+    {
 			headers: {
 				authorization: this._token,
         "Content-Type": "application/json",
 			},
-      body: JSON.stringify({
-        text
-      }),
-		}).then(onResponce);
+		});
 	}
 
   postPost(data: PostPostProps) {
-		return fetch(`${this._baseUrl}/posts`, {
+		return axios.post(`${this._baseUrl}/posts`,
+    data,
+    {
       method: "POST",
 			headers: {
 				authorization: this._token,
         "Content-Type": "application/json",
 			},
-      body: JSON.stringify(data),
-		}).then(onResponce);
+		})
 	}
 
   updatePost(id: string, data: PostPostProps) {
-		return fetch(`${this._baseUrl}/posts/${id}`, {
-      method: "PATCH",
+		return axios.patch(`${this._baseUrl}/posts/${id}`, 
+    data,
+    {
 			headers: {
 				authorization: this._token,
         "Content-Type": "application/json",
 			},
-      body: JSON.stringify(data),
-		}).then(onResponce);
+		});
 	}
 
   deleteComment(postID: string, commentID: string) {
-    return fetch(`${this._baseUrl}/posts/comments/${postID}/${commentID}`, {
-      method: "DELETE",
+    return axios.delete(`${this._baseUrl}/posts/comments/${postID}/${commentID}`, {
       headers: {
         authorization: this._token,
       },
-    }).then(onResponce);
+    });
   }
 
   getPostPagin(page: number, number: number) {

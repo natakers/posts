@@ -3,20 +3,21 @@ import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import "moment/locale/ru";
-import { useContext } from "react";
-import { PostContext } from "../../context/postContext";
 import { useState } from "react";
-import api from "../../Api";
 import IconButton from "@mui/material/IconButton";
 import SaveIcon from '@mui/icons-material/Save';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { UsersState } from "redux/reducers/user/userSlice";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { PostsState } from "redux/reducers/posts/postsSlice";
+import { postComment } from "redux/reducers/comments/comments_action_creators";
+import { useAppDispatch } from "hooks/useAppDispatch";
 
 
 const NewComment = () => {
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
-  const { currentPost, setCurrentCommentList } = useContext(PostContext);
+  const { currentPost }: PostsState = useTypedSelector(state => state.posts)
+  const dispatch = useAppDispatch()
   const [comment, setComment] = useState<string>('');
   const style = {
     backgroundColor: "#fff",
@@ -32,8 +33,7 @@ const NewComment = () => {
   const handleClickAdd = async () => {
     try {
       if (currentPost) {
-        let result = await api.postComment(currentPost._id, comment);
-        setCurrentCommentList(result.comments.reverse())
+        dispatch(postComment({id: currentPost._id, text: comment}))
         setComment('')
       }
     } catch (error) { alert(error); }

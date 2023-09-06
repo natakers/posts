@@ -4,13 +4,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { ModalContext } from "../../context/modalContext";
-import { PostContext } from "../../context/postContext";
 import { useForm } from "react-hook-form";
-import api from "../../Api";
-import { PostProps } from "types/contexTypes";
 import { useAppDispatch } from "hooks/useAppDispatch";
-import { getPosts } from "redux/reducers/posts/post_action_creators";
+import { getPosts, postPost, updatePost } from "redux/reducers/posts/post_action_creators";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { PostsState } from "redux/reducers/posts/postsSlice";
 
 
 export interface PostPostProps {
@@ -22,19 +20,16 @@ export interface PostPostProps {
 
 const ModalPost = () => {
   const { handleClose, secondType } = useContext(ModalContext);
-  const { currentPost, setCurrentPost } =
-  useContext(PostContext);
+  const { currentPost }: PostsState = useTypedSelector(state => state.posts)
   const { register, handleSubmit, formState: { errors },} = useForm<PostPostProps>({ mode: "onChange", });
   const dispatch = useAppDispatch()
-  const { posts } = useTypedSelector(state => state.posts)
 
   const onSubmit = async (data: PostPostProps) => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
-    if (secondType === "create") { await api.postPost(data);  }
-    if (secondType === "update" && currentPost) { await api.updatePost(currentPost._id, data) }
+    if (secondType === "create") { dispatch(postPost(data)) }
+    if (secondType === "update" && currentPost) { dispatch(updatePost({id: currentPost._id, data: data})) }
     dispatch(getPosts())
     handleClose();
-    if (secondType === "update" && currentPost) { setCurrentPost(posts.filter((post: PostProps) => post._id === currentPost._id)[0]) }
   };
 
   
