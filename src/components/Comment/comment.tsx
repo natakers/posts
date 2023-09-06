@@ -9,11 +9,14 @@ import { CommentProps } from "types/contexTypes";
 import { setCurrentComment } from "redux/reducers/comments/commentsSlice";
 import { useAppDispatch } from "hooks/useAppDispatch";
 import DeleteButton from "components/IconsButton/Delete";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 const Comment: React.FC<CommentProps> = ( comment) => {
   const { handleOpen } = useContext(ModalContext);
   const dispatch = useAppDispatch()
-
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
+  
   const handleDeleteComment = (comment: CommentProps) => {
     dispatch(setCurrentComment(comment))
     handleOpen("confirm", "comment")
@@ -31,7 +34,7 @@ const Comment: React.FC<CommentProps> = ( comment) => {
           <Typography variant="body2" color="text.secondary"> {comment.text} </Typography>
         </Box>
       </Box>
-      <DeleteButton callback={() => handleDeleteComment(comment)}/>
+      { currentUser && currentUser._id === comment.author._id && <DeleteButton callback={() => handleDeleteComment(comment)}/>}
     </Box>
   );
 };
