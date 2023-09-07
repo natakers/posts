@@ -1,14 +1,13 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "hooks/useAppDispatch";
 import { getPosts, postPost, updatePost } from "redux/reducers/posts/post_action_creators";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { PostsState } from "redux/reducers/posts/postsSlice";
+import { ModalState, handleClose } from "redux/reducers/modal/modalSlice";
 
 
 export interface PostPostProps {
@@ -19,17 +18,17 @@ export interface PostPostProps {
 }
 
 const ModalPost = () => {
-  const { handleClose, secondType } = useContext(ModalContext);
+  const { secondType }: ModalState = useTypedSelector(state => state.modal)
   const { currentPost }: PostsState = useTypedSelector(state => state.posts)
   const { register, handleSubmit, formState: { errors },} = useForm<PostPostProps>({ mode: "onChange", });
   const dispatch = useAppDispatch()
-
+  
   const onSubmit = async (data: PostPostProps) => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
     if (secondType === "create") { dispatch(postPost(data)) }
     if (secondType === "update" && currentPost) { dispatch(updatePost({id: currentPost._id, data: data})) }
     dispatch(getPosts())
-    handleClose();
+    dispatch(handleClose());
   };
 
   
@@ -74,7 +73,7 @@ const ModalPost = () => {
         <Button type="submit" variant="contained" sx={{ backgroundColor: "#00718f", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
           Сохранить
         </Button>
-        <Button onClick={handleClose} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }} >
+        <Button onClick={() => dispatch(handleClose())} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }} >
           Отмена
         </Button>
       </Box>

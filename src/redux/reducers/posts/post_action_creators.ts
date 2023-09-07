@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "Api";
 import { AxiosError } from "axios";
 import { PostPostProps } from "components/Modal/ModalPost";
-import { removePost, addPost, changeLike } from "./postsSlice";
+import { addPost, changeLike } from "./postsSlice";
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
@@ -47,8 +47,9 @@ export const changeLikePostStatus = createAsyncThunk(
 export const deletePost = createAsyncThunk(
     'posts/deletePost',
     async ( postID: string, {rejectWithValue, dispatch}) => {
-        const res = await api.deletePost(postID).catch((res: AxiosError) => rejectWithValue(res.message))
-        dispatch(removePost(postID))
+        const res = await api.deletePost(postID).then(res => res.data ).catch((res: AxiosError) => rejectWithValue(res.message))
+        console.log(res);
+        
         return res 
     }
 )

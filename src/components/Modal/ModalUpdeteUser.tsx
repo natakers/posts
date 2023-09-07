@@ -1,22 +1,20 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { UsersState } from "redux/reducers/user/userSlice";
 import CardMedia from "@mui/material/CardMedia";
-import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
 import {  UserUpdateProps } from "types/contexTypes";
 import { setUserAvatar, setUserInfo } from "redux/reducers/user/user_action_creators";
 import { useAppDispatch } from "hooks/useAppDispatch";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { handleClose } from "redux/reducers/modal/modalSlice";
 
 const ModalUpdateUser = () => {
-  const { handleClose } = useContext(ModalContext);
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const { register, handleSubmit, watch, formState: { errors } } = useForm<InputTypes>({ mode: "onBlur" });
-  const onSubmit = (data: UserUpdateProps) => { handleUpdateUser(data); if (data.avatar) {handleUpdateAvatar(data.avatar)}; handleClose(); };
+  const onSubmit = (data: UserUpdateProps) => { handleUpdateUser(data); if (data.avatar) {handleUpdateAvatar(data.avatar)}; dispatch(handleClose()); };
   const dispatch = useAppDispatch()
   
   function handleUpdateUser(userUpdate: UserUpdateProps) {
@@ -59,7 +57,7 @@ const ModalUpdateUser = () => {
           <Button variant="contained" type="submit" sx={{ backgroundColor: "#00718f", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
             Сохранить
           </Button>
-          <Button onClick={handleClose} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
+          <Button onClick={() => dispatch(handleClose())} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
             Отмена
           </Button>
         </Box>

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { PostProps } from "types/contexTypes"
-import { getPosts, getPostById, updatePost } from "./post_action_creators"
+import { getPosts, getPostById, updatePost, deletePost } from "./post_action_creators"
 
 export interface PostsState {
     posts: PostProps[],
@@ -16,13 +16,10 @@ const initialState: PostsState = {
     error: ''
 }
 
-export const postsSlice: any = createSlice({
+export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        removePost: (state, action) => {
-            state.posts = state.posts.filter((post) => post._id !== action.payload);
-        },
         addPost: (state, action) => {
             state.posts.unshift(action.payload);
         },
@@ -69,7 +66,18 @@ export const postsSlice: any = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
+        .addCase(deletePost.fulfilled.type, (state, action: PayloadAction<PostProps>) => {
+            state.loading = false;
+            state.error = '';
+            console.log(action.payload);
+            
+            state.posts = state.posts.filter((post) => post._id !== action.payload._id);
+        })
+        .addCase(deletePost.rejected.type, (state, action: PayloadAction<string>) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
     },
 })
-export const {removePost, addPost, changeLike, setCurrentPost } = postsSlice.actions
+export const { addPost, changeLike, setCurrentPost } = postsSlice.actions
 export default postsSlice.reducer

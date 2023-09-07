@@ -10,25 +10,24 @@ import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import "moment/locale/ru";
-import { MouseEvent, useContext } from "react";
+import { MouseEvent } from "react";
 import { PostProps } from "types/contexTypes";
 import { UsersState } from "redux/reducers/user/userSlice";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import Like from "components/IconsButton/Like";
 import DeleteButton from "components/IconsButton/Delete";
-import { ModalContext } from 'context/modalContext';
 import { setCurrentPost } from "redux/reducers/posts/postsSlice";
 import { useAppDispatch } from "hooks/useAppDispatch";
+import { handleOpen } from "redux/reducers/modal/modalSlice";
 
 const PostCard: React.FC<PostProps> = (post) => {
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const dispatch = useAppDispatch()
   let liked = isLiked(post.likes, currentUser ? currentUser._id : '');
-  const { handleOpen } = useContext(ModalContext);
   function handleDeleteClick(e: MouseEvent) {
     dispatch(setCurrentPost(post))
     e.stopPropagation();
-    handleOpen("confirm", 'post');
+    dispatch(handleOpen({ type: "confirm", secondType: 'post'}));
   }
   return (
     <Card sx={{ maxWidth: 345, display: "flex", flexDirection: "column", justifyContent: "space-between", }}>

@@ -4,12 +4,11 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import { useContext } from "react";
-import { ModalContext } from "../../context/modalContext";
 import { UsersState } from "redux/reducers/user/userSlice";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { useAppDispatch } from "hooks/useAppDispatch";
 import { setUserInfo } from "redux/reducers/user/user_action_creators";
+import { handleOpen } from "redux/reducers/modal/modalSlice";
 
 const UserInfo = () => {
   const [isShow, setisShow] = useState<boolean>(false);
@@ -34,14 +33,12 @@ const UserInfo = () => {
     }
   }, [currentUser]);
 
-  const { handleOpen } = useContext(ModalContext);
-
   const handleOpenModal = () => {
-    handleOpen("update_user");
+    dispatch(handleOpen({type: "update_user"}));
   };
 
   const handleOut = () => {
-    handleOpen("confirm", 'user');
+    dispatch(handleOpen({ type: "confirm", secondType: 'user'}));
   };
 
   return (

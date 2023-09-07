@@ -9,7 +9,6 @@ import { Routes, Route } from "react-router-dom";
 import NotFoundPage from "../../pages/NotFoundPage/not-found-page";
 import PostPage from "../../pages/PostPage/postPage";
 import { MainPage } from "../../pages/MainPage/mainPage";
-import { ModalContext } from "../../context/modalContext";
 import ModalBase from "../Modal/ModalBase";
 import LoginPage from "../../pages/LoginPage/loginPage";
 import { useNavigate } from 'react-router-dom'
@@ -22,22 +21,11 @@ import { UsersState } from "redux/reducers/user/userSlice";
 const App = () => {
   const navigate = useNavigate()
   const [currentSort, setCurrentSort] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(false);
-  const [type, setType] = useState<string>("");
-  const [secondType, setsecondType] = useState<string>("");
-  const {posts } = useTypedSelector(state => state.posts)
+  const { posts } = useTypedSelector(state => state.posts)
   const { token }: UsersState = useTypedSelector(state => state.user)
   const dispatch = useAppDispatch()
   
-  const handleClose = () => {
-    setType("");
-    setOpen(false);
-  };
-  const handleOpen = (type: string, secondType = "") => {
-    setType(type);
-    setsecondType(secondType);
-    setOpen(true);
-  };
+
   useEffect(() => {
     if (token) {
       api._token = `Bearer ${token}`;
@@ -52,8 +40,6 @@ const App = () => {
   };
 
   return (
-        <ModalContext.Provider
-          value={{open, setOpen, handleOpen, handleClose, type, secondType, setType}}>
           <Box
             sx={{
               width: "100%",
@@ -77,7 +63,6 @@ const App = () => {
             <ModalBase />
             <Footer />
           </Box>
-        </ModalContext.Provider>
   );
 };
 

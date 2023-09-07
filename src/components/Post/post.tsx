@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import 'moment/locale/ru';
 import { isLiked } from '../../utils';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { CommentsState } from 'redux/reducers/comments/commentsSlice';
@@ -18,21 +18,20 @@ import { getComments } from 'redux/reducers/comments/comments_action_creators';
 import Like from 'components/IconsButton/Like';
 import DeleteButton from 'components/IconsButton/Delete';
 import { UsersState } from 'redux/reducers/user/userSlice';
-import { ModalContext } from 'context/modalContext';
+import { handleOpen } from 'redux/reducers/modal/modalSlice';
 
 export const Post = () => {
   const { comments }: CommentsState = useTypedSelector(state => state.comments)
   const { currentPost } = useTypedSelector(state => state.posts)
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
-  const { handleOpen } = useContext(ModalContext);
   let liked = false
   
-  if (currentUser) liked = isLiked(currentPost.likes, currentUser._id);
+  if (currentUser && currentPost) liked = isLiked(currentPost.likes, currentUser._id);
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (currentPost.id !== '') {
+    if (currentPost && currentPost._id !== '') {
       dispatch(getComments(currentPost._id))
     }
     // eslint-disable-next-line
@@ -40,11 +39,11 @@ export const Post = () => {
 
   function handleDeleteClick(e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation();
-    handleOpen('confirm', 'post');
+    dispatch(handleOpen({type: 'confirm', secondType: 'post'}));
   }
   const handleEditClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    handleOpen('post_modal', 'update');
+    dispatch(handleOpen({type: 'post_modal', secondType: 'update'}));
   };
   return (
     <>

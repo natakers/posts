@@ -1,12 +1,12 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
-import api from "../../Api";
 import styles from "./modals.module.css";
+import { handleClose, handleOpen } from "redux/reducers/modal/modalSlice";
+import { singUpUser } from "redux/reducers/user/user_action_creators";
+import { useAppDispatch } from "hooks/useAppDispatch";
 
 export interface UserSignUp {
   password: string;
@@ -15,8 +15,6 @@ export interface UserSignUp {
 }
 
 const ModalSignUp = () => {
-  const { handleClose, handleOpen } = useContext(ModalContext);
-
   const {
     register,
     handleSubmit,
@@ -24,16 +22,16 @@ const ModalSignUp = () => {
   } = useForm<UserSignUp>({
     mode: "onChange",
   });
+  const dispatch = useAppDispatch()
 
   const onSubmit = async (data: UserSignUp) => {
     console.log(data);
     try {
-      let result = await api.singUpUser(data);
-      console.log(result);
-      handleOpen("signIn");
+      dispatch(singUpUser(data))
+      dispatch(handleOpen({type: "signIn"}));
     } catch (error) {
       alert(error);
-      handleClose();
+      dispatch(handleClose());
     }
   };
   return (
@@ -83,7 +81,7 @@ const ModalSignUp = () => {
           Зарегистрироваться
         </Button>
         <Button
-          onClick={handleClose}
+          onClick={() => dispatch(handleClose())}
           variant="contained"
           sx={{
             backgroundColor: "#f0e2d5",

@@ -17,7 +17,7 @@ const initialState: CommentsState = {
     error: ''
 }
 
-export const commentsSlice: any = createSlice({
+export const commentsSlice = createSlice({
     name: 'comments',
     initialState,
     reducers: {
