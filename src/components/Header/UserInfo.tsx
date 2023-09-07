@@ -4,47 +4,47 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import { useContext } from "react";
-import { ModalContext } from "../../context/modalContext";
-import { UserContext } from "../../context/userContext";
-import { UserUpdateProps } from "types/contexTypes";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { setUserInfo } from "redux/reducers/user/user_action_creators";
+import { handleOpen } from "redux/reducers/modal/modalSlice";
 
-const UserInfo: React.FC<{onUpdateUser: (userUpdate: UserUpdateProps) => void}> = ({ onUpdateUser }) => {
+const UserInfo = () => {
   const [isShow, setisShow] = useState<boolean>(false);
   const [nameUser, setName] = useState<string>('');
   const [aboutUser, setAbout] = useState<string>('');
-  const { user } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
+  const dispatch = useAppDispatch()
 
   const handleClickButtonEdit = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     setisShow(false);
-    onUpdateUser({
+    dispatch(setUserInfo({
       name: nameUser,
       about: aboutUser,
-    });
+    }));
   };
 
   useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setAbout(user.about);
+    if (currentUser) {
+      setName(currentUser.name);
+      setAbout(currentUser.about);
     }
-  }, [user]);
-
-  const { handleOpen } = useContext(ModalContext);
+  }, [currentUser]);
 
   const handleOpenModal = () => {
-    handleOpen("update_user");
+    dispatch(handleOpen({type: "update_user"}));
   };
 
   const handleOut = () => {
-    handleOpen("confirm", 'user');
+    dispatch(handleOpen({ type: "confirm", secondType: 'user'}));
   };
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Tooltip title="Open settings">
-        <Avatar alt="avatar" src={user ? user.avatar : ''} />
+        <Avatar alt="avatar" src={currentUser ? currentUser.avatar : ''} />
       </Tooltip>
       <Box
         sx={{
@@ -55,7 +55,7 @@ const UserInfo: React.FC<{onUpdateUser: (userUpdate: UserUpdateProps) => void}> 
           flexDirection: { xs: "column", md: "row" },
         }}
       >
-        {user && (
+        {currentUser && (
           <>
             <Typography
               variant="inherit"

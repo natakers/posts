@@ -1,18 +1,30 @@
-import { useContext } from "react";
-import { ModalContext } from "../../context/modalContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import React, { memo } from "react";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { handleOpen } from "redux/reducers/modal/modalSlice";
+import { useEffect } from "react";
 
 const Registration = memo(() => {
+  const dispatch = useAppDispatch()
 
   const handleSingUp = () => {
-    handleOpen("signUp");
+    dispatch(handleOpen({type: "signUp"}));
   };
-  const { handleOpen } = useContext(ModalContext);
   const handleSingIn = () => {
-    handleOpen("signIn");
+    dispatch(handleOpen({type: "signIn"}));
   };
+
+  const navigate = useNavigate();
+  const { token }: UsersState = useTypedSelector(state => state.user)
+
+  useEffect(() => {
+    if (token) navigate("/");
+  }, [token])
+  
   return (
     <Box
       sx={{ mt: 1, mb: 1, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: { xs: "column", md: "row" },}}>

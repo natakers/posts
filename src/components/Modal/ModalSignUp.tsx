@@ -1,40 +1,37 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
-import api from "../../Api";
 import styles from "./modals.module.css";
+import { handleClose, handleOpen } from "redux/reducers/modal/modalSlice";
+import { singUpUser } from "redux/reducers/user/user_action_creators";
+import { useAppDispatch } from "hooks/useAppDispatch";
 
-interface InputTypes {
+export interface UserSignUp {
   password: string;
   email: string;
   group: string
 }
 
 const ModalSignUp = () => {
-  const { handleClose, handleOpen } = useContext(ModalContext);
-
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<InputTypes>({
+  } = useForm<UserSignUp>({
     mode: "onChange",
   });
+  const dispatch = useAppDispatch()
 
-  const onSubmit = async (data: InputTypes) => {
+  const onSubmit = async (data: UserSignUp) => {
     console.log(data);
     try {
-      let result = await api.singUpUser(data);
-      console.log(result);
-      handleOpen("signIn");
+      dispatch(singUpUser(data))
+      dispatch(handleOpen({type: "signIn"}));
     } catch (error) {
       alert(error);
-      handleClose();
+      dispatch(handleClose());
     }
   };
   return (
@@ -50,7 +47,7 @@ const ModalSignUp = () => {
             message: "Введите валидный адрес электронной почты.",
           },
         })}
-        type="text"  value={watch("email")} onChange={register("email").onChange}
+        type="text" onChange={register("email").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.email && <p>{errors?.email?.message}</p>}
@@ -58,7 +55,7 @@ const ModalSignUp = () => {
       <TextField sx={{ width: "100%", mb: 2 }} placeholder="Группа" label="Группа" id="postText" variant="outlined" {...register("group", {
           required: "Обязательное поле",
         })}
-        type="text" value={watch("group")} onChange={register("group").onChange}
+        type="text" onChange={register("group").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.group && <p>{errors?.group?.message}</p>}
@@ -67,7 +64,7 @@ const ModalSignUp = () => {
         {...register("password", {
           required: "Обязательное поле",
         })}
-        type="password" value={watch("password")} onChange={register("password").onChange}
+        type="password" onChange={register("password").onChange}
       />
       <div className={styles.erroe__form}>
         {errors?.password && <p>{errors?.password?.message}</p>}
@@ -84,7 +81,7 @@ const ModalSignUp = () => {
           Зарегистрироваться
         </Button>
         <Button
-          onClick={handleClose}
+          onClick={() => dispatch(handleClose())}
           variant="contained"
           sx={{
             backgroundColor: "#f0e2d5",

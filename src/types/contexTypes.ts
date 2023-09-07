@@ -1,13 +1,3 @@
-export interface UserContexProps {
-    user: UserProps | null, 
-    isLoading: boolean, 
-    handleUpdateUser: (userUpdate: UserUpdateProps) => void,
-    handleUpdateAvatar: (avatar: string) => void, 
-    token: string |null, 
-    setToken: (token: string) => void, 
-    handleDeleteUser: () => void
-}
-
 export interface UserProps {
     name: string,
     email: string,
@@ -55,7 +45,6 @@ export interface ModalContexProps {
     handleOpen: (type: string, secondType?: string) => void, 
     secondType: string, 
     setType: (type: string) => void, 
-    setCards: (cards: PostProps[]) => void,
     handleClose: () => void
 }
 

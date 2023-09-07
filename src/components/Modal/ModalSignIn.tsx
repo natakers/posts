@@ -1,40 +1,33 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { ModalContext } from "../../context/modalContext";
 import { useForm } from "react-hook-form";
-import api from "../../Api";
-import { UserContext } from "../../context/userContext";
 import styles from "./modals.module.css";
 import { useNavigate } from "react-router-dom";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { singInUser } from "redux/reducers/user/user_action_creators";
+import { handleClose } from "redux/reducers/modal/modalSlice";
 
 const ModalSignIn = () => {
-  const { handleClose } = useContext(ModalContext);
-  const { setToken } = useContext(UserContext);
+  const { token }: UsersState = useTypedSelector(state => state.user)
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch()
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<InputTypes>({
+  } = useForm<UserSignIn>({
     mode: "onChange",
   });
-  const navigate = useNavigate();
 
-  const onSubmit = async (data: InputTypes) => {
-    try {
-      let result = await api.singInUser(data);
-      console.log(result);
-      localStorage.setItem("tokenPosts", result.token);
-      setToken(result.token);
-      navigate("/");
-    } catch (error) {
-      alert(error);
-    }
-    handleClose();
+  const onSubmit = async (data: UserSignIn) => {
+    dispatch(singInUser(data))
+    dispatch(handleClose());
+    if (token) navigate('/')
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -63,7 +56,6 @@ const ModalSignIn = () => {
           },
         })}
         type="text"
-        value={watch("email")}
         onChange={register("email").onChange}
       />
       <div className={styles.erroe__form}>
@@ -80,7 +72,6 @@ const ModalSignIn = () => {
           required: "Обязательное поле",
         })}
         type="password"
-        value={watch("password")}
         onChange={register("password").onChange}
       />
       <div className={styles.erroe__form}>
@@ -98,7 +89,7 @@ const ModalSignIn = () => {
           Войти
         </Button>
         <Button
-          onClick={handleClose}
+          onClick={() => dispatch(handleClose())}
           variant="contained"
           sx={{
             backgroundColor: "#f0e2d5",
@@ -114,7 +105,7 @@ const ModalSignIn = () => {
 };
 export default ModalSignIn;
 
-interface InputTypes {
+export interface UserSignIn {
   password: string;
   email: string;
 }

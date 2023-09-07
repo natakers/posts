@@ -1,20 +1,29 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-
+import { UsersState } from "redux/reducers/user/userSlice";
 import CardMedia from "@mui/material/CardMedia";
-import { ModalContext } from "../../context/modalContext";
-import { UserContext } from "../../context/userContext";
 import { useForm } from "react-hook-form";
 import {  UserUpdateProps } from "types/contexTypes";
+import { setUserAvatar, setUserInfo } from "redux/reducers/user/user_action_creators";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { handleClose } from "redux/reducers/modal/modalSlice";
 
 const ModalUpdateUser = () => {
-  const { handleClose } = useContext(ModalContext);
-  const { user: currentUser, handleUpdateUser, handleUpdateAvatar } = useContext(UserContext);
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const { register, handleSubmit, watch, formState: { errors } } = useForm<InputTypes>({ mode: "onBlur" });
-  const onSubmit = (data: UserUpdateProps) => { handleUpdateUser(data); if (data.avatar) {handleUpdateAvatar(data.avatar)}; handleClose(); };
+  const onSubmit = (data: UserUpdateProps) => { handleUpdateUser(data); if (data.avatar) {handleUpdateAvatar(data.avatar)}; dispatch(handleClose()); };
+  const dispatch = useAppDispatch()
+  
+  function handleUpdateUser(userUpdate: UserUpdateProps) {
+    dispatch(setUserInfo(userUpdate))
+  }
+
+  function handleUpdateAvatar(avatar: string) {
+    dispatch(setUserAvatar(avatar))
+  }
 
   return (
     <>
@@ -28,17 +37,17 @@ const ModalUpdateUser = () => {
           </Box>
           <Box sx={{ ml: 1 }}>
             <TextField label="Имя" id="userName" variant="outlined" size="small" sx={{ backgroundColor: "white", m: "0.5rem 0" }} {...register("name")}
-              type="text" defaultValue={currentUser ? currentUser.name : ''} value={watch("name")} onChange={register("name").onChange} />
+              type="text" defaultValue={currentUser ? currentUser.name : ''} onChange={register("name").onChange} />
               <div className="erroe__form">
                 {errors?.name && <p>{errors?.name?.message}</p>}
               </div>
-            <TextField label="Роль" id="userAbout" variant="outlined" size="small" defaultValue={currentUser ? currentUser.about : ''} value={watch("about")} 
+            <TextField label="Роль" id="userAbout" variant="outlined" size="small" defaultValue={currentUser ? currentUser.about : ''} 
             {...register("about")} type="text" onChange={register("about").onChange} sx={{ backgroundColor: "white", m: "0.5rem 0" }} />
               <div className="erroe__form">
                 {errors?.about && <p>{errors?.about?.message}</p>}
               </div>
             <TextField label="URL аватара" id="userImage" variant="outlined" size="small" sx={{ backgroundColor: "white", m: "0.5rem 0" }} defaultValue={currentUser ? currentUser.avatar : ''}
-              {...register("avatar")} type="text" value={watch("avatar")} onChange={register("avatar").onChange} />
+              {...register("avatar")} type="text" onChange={register("avatar").onChange} />
               <div className="erroe__form">
                 {errors?.avatar && <p>{errors?.avatar?.message}</p>}
               </div>
@@ -48,7 +57,7 @@ const ModalUpdateUser = () => {
           <Button variant="contained" type="submit" sx={{ backgroundColor: "#00718f", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
             Сохранить
           </Button>
-          <Button onClick={handleClose} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
+          <Button onClick={() => dispatch(handleClose())} variant="contained" sx={{ backgroundColor: "#f0e2d5", color: "#013f4e", ":hover": { bgcolor: "#58641a", color: "white" }, }}>
             Отмена
           </Button>
         </Box>

@@ -1,24 +1,24 @@
-import { useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import moment from "moment";
 import "moment/locale/ru";
-import { ModalContext } from "../../context/modalContext";
-import { PostContext } from "../../context/postContext";
-import IconButton from "@mui/material/IconButton";
-import Delete from "@mui/icons-material/Delete";
 import { CommentProps } from "types/contexTypes";
+import { setCurrentComment } from "redux/reducers/comments/commentsSlice";
+import { useAppDispatch } from "hooks/useAppDispatch";
+import DeleteButton from "components/IconsButton/Delete";
+import { UsersState } from "redux/reducers/user/userSlice";
+import { useTypedSelector } from "hooks/useTypedSelector";
+import { handleOpen } from "redux/reducers/modal/modalSlice";
 
 const Comment: React.FC<CommentProps> = ( comment) => {
-  const { handleOpen } = useContext(ModalContext);
-  const { setCurrentComment } = useContext(PostContext);
-
-  const handleDeleteComment = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setCurrentComment(comment._id);
-    handleOpen("confirm", "comment");
-  };
+  const dispatch = useAppDispatch()
+  const { currentUser }: UsersState = useTypedSelector(state => state.user)
+  
+  const handleDeleteComment = (comment: CommentProps) => {
+    dispatch(setCurrentComment(comment))
+    dispatch(handleOpen({ type: "confirm", secondType: 'comment'}));
+  }
 
   return (
     <Box
@@ -32,9 +32,7 @@ const Comment: React.FC<CommentProps> = ( comment) => {
           <Typography variant="body2" color="text.secondary"> {comment.text} </Typography>
         </Box>
       </Box>
-      <IconButton aria-label="add to favorites" onClick={(e) => handleDeleteComment(e)}>
-        <Delete />
-      </IconButton>
+      { currentUser && currentUser._id === comment.author._id && <DeleteButton callback={() => handleDeleteComment(comment)}/>}
     </Box>
   );
 };
