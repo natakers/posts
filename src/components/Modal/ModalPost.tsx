@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "hooks/useAppDispatch";
-import { getPosts, postPost, updatePost } from "redux/reducers/posts/post_action_creators";
+import { postPost, updatePost } from "redux/reducers/posts/post_action_creators";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { PostsState } from "redux/reducers/posts/postsSlice";
 import { ModalState, handleClose } from "redux/reducers/modal/modalSlice";
@@ -27,7 +27,6 @@ const ModalPost = () => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
     if (secondType === "create") { dispatch(postPost(data)) }
     if (secondType === "update" && currentPost) { dispatch(updatePost({id: currentPost._id, data: data})) }
-    dispatch(getPosts())
     dispatch(handleClose());
   };
 

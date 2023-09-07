@@ -33,7 +33,7 @@ const PostCard: React.FC<PostProps> = (post) => {
     <Card sx={{ maxWidth: 345, display: "flex", flexDirection: "column", justifyContent: "space-between", }}>
       <Link to={`/post/${post._id}`} className="card__link">
         <CardHeader avatar={<Avatar src={post.author.avatar} aria-label="recipe"></Avatar>} title={post.title} subheader={moment(post.created_at).format("LL")}/>
-        <CardMedia component="img" height="194" image={post.image} alt={post.title}/>
+        <CardMedia component="img" height="194" image={post.image} alt={post.title} loading="lazy"/>
         <CardContent>
           <Typography variant="body2" color="text.secondary" sx={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", }}>
             {post.text}

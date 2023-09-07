@@ -6,40 +6,46 @@ import { useNavigate } from "react-router-dom";
 import { PostProps } from "types/contexTypes";
 import CardList from "components/CardList/cardList";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { PostsState } from "redux/reducers/posts/postsSlice";
 import { handleOpen } from "redux/reducers/modal/modalSlice";
 import { useAppDispatch } from "hooks/useAppDispatch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export const MainPage = ({ token, cards, onChangeSort, currentSort }: MainPageProps) => {
-  const { error, loading } = useTypedSelector(state => state.posts)
+export const MainPage = ({ token }: MainPageProps) => {
+  const { posts, error, loading }: PostsState = useTypedSelector(state => state.posts)
+  const [cards, setCards] = useState<PostProps[]>([])
+  const [currentSort, setCurrentSort] = useState<string>("По дате")
   const dispatch = useAppDispatch()
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setCards([...posts])
+  }, [posts])
 
   useEffect(() => {
     if (!token) {
       navigate("/login");  
     }
   }, [])
-  
   if (currentSort === "По дате") {
-    cards = cards.sort((item, item1) => {
+    cards.sort((item, item1) => {
       if (item1.created_at.toLowerCase() < item.created_at.toLowerCase()) { return -1; }
       if (item1.created_at.toLowerCase() > item.created_at.toLowerCase()) { return 1; }
       return 0;
     });
   }
   if (currentSort === "По названию") {
-    cards = cards.sort((item, item1) => {
+    cards.sort((item, item1) => {
       if (item.title.toLowerCase() < item1.title.toLowerCase()) { return -1; }
       if (item.title.toLowerCase() > item1.title.toLowerCase()) { return 1; }
       return 0;
     });
   }
-  if (currentSort === "Популярные") { cards = cards.sort((item, item1) => item1.likes.length - item.likes.length); }
+  if (currentSort === "Популярные") { cards.sort((item, item1) => item1.likes.length - item.likes.length); }
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2,}}>
-        <Sort onChangeSort={onChangeSort} />
+        <Sort setCurrentSort={setCurrentSort} />
         <Button
         onClick={() => dispatch(handleOpen({type: 'post_modal', secondType: "create"}))}
         variant="contained"
@@ -53,8 +59,5 @@ export const MainPage = ({ token, cards, onChangeSort, currentSort }: MainPagePr
 };
 
 interface MainPageProps {
-  cards: Array<PostProps>, 
-  onChangeSort: (id: string) => void, 
-  currentSort: string,
   token: string | null
 }

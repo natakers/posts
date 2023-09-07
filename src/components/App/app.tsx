@@ -20,8 +20,6 @@ import { UsersState } from "redux/reducers/user/userSlice";
 
 const App = () => {
   const navigate = useNavigate()
-  const [currentSort, setCurrentSort] = useState<string>("");
-  const { posts } = useTypedSelector(state => state.posts)
   const { token }: UsersState = useTypedSelector(state => state.user)
   const dispatch = useAppDispatch()
   
@@ -34,10 +32,6 @@ const App = () => {
     } else navigate('/login')
     // eslint-disable-next-line
   }, [token]);
-
-  const onChangeSort = (id: string) => {
-    setCurrentSort(id);
-  };
 
   return (
           <Box
@@ -54,7 +48,7 @@ const App = () => {
               sx={{ marginTop: "20px", marginBottom: "20px", flexGrow: 1 }}
             >
               <Routes>
-                <Route index element={<MainPage token={token} cards={posts} onChangeSort={onChangeSort} currentSort={currentSort}/>}/>
+                <Route index element={<MainPage token={token}/>}/>
                 <Route path="/post/:postId" element={token && <PostPage token={token} />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />

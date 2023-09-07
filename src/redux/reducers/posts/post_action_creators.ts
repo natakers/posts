@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "Api";
 import { AxiosError } from "axios";
 import { PostPostProps } from "components/Modal/ModalPost";
-import { addPost, changeLike } from "./postsSlice";
+import { changeLike } from "./postsSlice";
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
@@ -31,7 +31,6 @@ export const postPost = createAsyncThunk(
     'posts/postPost',
     async ( data: PostPostProps, {rejectWithValue, dispatch}) => {
         const res = await api.postPost(data).then(res => res.data ).catch((res: AxiosError) => rejectWithValue(res.message)) 
-        dispatch(addPost(res))
         return res    
     }
 )
