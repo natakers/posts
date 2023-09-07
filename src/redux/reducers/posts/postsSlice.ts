@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { PostProps } from "types/contexTypes"
-import { getPosts, getPostById, updatePost, deletePost } from "./post_action_creators"
+import { getPosts, getPostById, updatePost, deletePost, postPost } from "./post_action_creators"
 
 export interface PostsState {
     posts: PostProps[],
@@ -20,9 +20,6 @@ export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        addPost: (state, action) => {
-            state.posts.unshift(action.payload);
-        },
         changeLike: (state, action) => {
             state.posts.map(post => (post._id === action.payload._id) ? post.likes = action.payload.likes : post)
             if (state.currentPost) state.currentPost.likes = action.payload.likes
@@ -40,6 +37,7 @@ export const postsSlice = createSlice({
         })
         .addCase(getPosts.pending.type, (state) => {
             state.loading = true;
+            state.posts = []
         })
         .addCase(getPosts.rejected.type, (state, action: PayloadAction<string>) => {
             state.loading = false;
@@ -52,6 +50,7 @@ export const postsSlice = createSlice({
         })
         .addCase(getPostById.pending.type, (state) => {
             state.loading = true;
+            state.currentPost = null
         })
         .addCase(getPostById.rejected.type, (state, action: PayloadAction<string>) => {
             state.loading = false;
@@ -69,15 +68,22 @@ export const postsSlice = createSlice({
         .addCase(deletePost.fulfilled.type, (state, action: PayloadAction<PostProps>) => {
             state.loading = false;
             state.error = '';
-            console.log(action.payload);
-            
             state.posts = state.posts.filter((post) => post._id !== action.payload._id);
         })
         .addCase(deletePost.rejected.type, (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.error = action.payload;
         })
+        .addCase(postPost.fulfilled.type, (state, action: PayloadAction<PostProps>) => {
+            state.loading = false;
+            state.error = '';
+            state.posts.unshift(action.payload);
+        })
+        .addCase(postPost.rejected.type, (state, action: PayloadAction<string>) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
     },
 })
-export const { addPost, changeLike, setCurrentPost } = postsSlice.actions
+export const { changeLike, setCurrentPost } = postsSlice.actions
 export default postsSlice.reducer
