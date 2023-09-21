@@ -10,19 +10,38 @@ import { setUserAvatar, setUserInfo } from "redux/reducers/user/user_action_crea
 import { useAppDispatch } from "hooks/useAppDispatch";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { handleClose } from "redux/reducers/modal/modalSlice";
+import { toast } from "react-toastify";
 
 const ModalUpdateUser = () => {
   const { currentUser }: UsersState = useTypedSelector(state => state.user)
   const { register, handleSubmit, watch, formState: { errors } } = useForm<InputTypes>({ mode: "onBlur" });
-  const onSubmit = (data: UserUpdateProps) => { handleUpdateUser(data); if (data.avatar) {handleUpdateAvatar(data.avatar)}; dispatch(handleClose()); };
+  const onSubmit = (data: UserUpdateProps) => { 
+    if (currentUser && (data.name !== currentUser.name || data.about !== currentUser.about)) {
+    handleUpdateUser(data); 
+    }
+    if (data.avatar && data.avatar !== currentUser?.avatar) {
+      handleUpdateAvatar(data.avatar)
+    }; 
+    dispatch(handleClose()); 
+    };
   const dispatch = useAppDispatch()
   
-  function handleUpdateUser(userUpdate: UserUpdateProps) {
-    dispatch(setUserInfo(userUpdate))
+  async function handleUpdateUser(userUpdate: UserUpdateProps) {
+    const resultAction = await dispatch(setUserInfo(userUpdate))
+    if (setUserInfo.fulfilled.match(resultAction)) {
+      toast.success('Данные обновлены', {position: toast.POSITION.TOP_CENTER})
+    } else {
+      toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+    }
   }
 
-  function handleUpdateAvatar(avatar: string) {
-    dispatch(setUserAvatar(avatar))
+  async function handleUpdateAvatar(avatar: string) {
+    const resultAction = await dispatch(setUserAvatar(avatar))
+    if (setUserAvatar.fulfilled.match(resultAction)) {
+      toast.success('Аватар обновлен', {position: toast.POSITION.TOP_CENTER})
+    } else {
+      toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+    }
   }
 
   return (

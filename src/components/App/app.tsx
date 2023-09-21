@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Footer from "../Footer/footer";
 import Header from "../Header/header";
 import "./index.css";
@@ -30,8 +30,7 @@ const App = () => {
       dispatch(getPosts())
       dispatch(getUserInfo())
     } else navigate('/login')
-    // eslint-disable-next-line
-  }, [token]);
+  }, [token, dispatch, navigate]);
 
   return (
           <Box

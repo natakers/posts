@@ -8,6 +8,7 @@ import { postPost, updatePost } from "redux/reducers/posts/post_action_creators"
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { PostsState } from "redux/reducers/posts/postsSlice";
 import { ModalState, handleClose } from "redux/reducers/modal/modalSlice";
+import { toast } from "react-toastify";
 
 
 export interface PostPostProps {
@@ -25,8 +26,22 @@ const ModalPost = () => {
   
   const onSubmit = async (data: PostPostProps) => {
     data = { ...data, tags: (typeof data.tags == 'string') ? data.tags.split(" ") : data.tags };
-    if (secondType === "create") { dispatch(postPost(data)) }
-    if (secondType === "update" && currentPost) { dispatch(updatePost({id: currentPost._id, data: data})) }
+    if (secondType === "create") { 
+      const resultAction = await dispatch(postPost(data)) 
+      if (postPost.fulfilled.match(resultAction)) {
+        toast.success('Пост создан', {position: toast.POSITION.TOP_CENTER})
+      } else {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
+    }
+    if (secondType === "update" && currentPost) { 
+      const resultAction = await dispatch(updatePost({id: currentPost._id, data: data})) 
+      if (updatePost.fulfilled.match(resultAction)) {
+        toast.success('Пост обновлен', {position: toast.POSITION.TOP_CENTER})
+      } else {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
+    }
     dispatch(handleClose());
   };
 

@@ -10,6 +10,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { useAppDispatch } from "hooks/useAppDispatch";
 import { singInUser } from "redux/reducers/user/user_action_creators";
 import { handleClose } from "redux/reducers/modal/modalSlice";
+import { toast } from 'react-toastify';
 
 const ModalSignIn = () => {
   const { token }: UsersState = useTypedSelector(state => state.user)
@@ -25,9 +26,13 @@ const ModalSignIn = () => {
   });
 
   const onSubmit = async (data: UserSignIn) => {
-    dispatch(singInUser(data))
-    dispatch(handleClose());
-    if (token) navigate('/')
+    const resultAction = await dispatch(singInUser(data))
+      if (singInUser.fulfilled.match(resultAction)) {
+        dispatch(handleClose());
+        if (token) navigate('/');
+      } else {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

@@ -26,7 +26,7 @@ export const MainPage = ({ token }: MainPageProps) => {
     if (!token) {
       navigate("/login");  
     }
-  }, [])
+  }, [navigate, token])
   if (currentSort === "По дате") {
     cards.sort((item, item1) => {
       if (item1.created_at.toLowerCase() < item.created_at.toLowerCase()) { return -1; }

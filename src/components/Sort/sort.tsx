@@ -16,7 +16,6 @@ const Sort = memo(({setCurrentSort}: {setCurrentSort: (id: string) => void}) => 
   const [alignment, setAlignment] = useState("По дате");
 
   const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
-    console.log(newAlignment);
     setCurrentSort(newAlignment);
     setAlignment(newAlignment);
   };

@@ -22,8 +22,7 @@ const PostPage = ({token}: {token: string}) => {
       api._token = `Bearer ${token}`;
       dispatch(getPostById(postId ? postId : ''))
     }
-    // eslint-disable-next-line
-  }, [token]);
+  }, [dispatch, postId, token]);
 
   return (
       <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "column" }}>

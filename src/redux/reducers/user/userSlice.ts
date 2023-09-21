@@ -3,6 +3,11 @@ import { UserProps } from "types/contexTypes"
 import { getUserInfo, setUserInfo, singInUser, setUserAvatar  } from "./user_action_creators"
 
 
+export interface SingInUser {
+    data: UserProps,
+    token: string,
+}
+
 export interface UsersState {
     currentUser: UserProps | null,
     token: string,
@@ -48,7 +53,7 @@ export const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
-        .addCase(singInUser.fulfilled.type, (state, action: PayloadAction<any>) => {
+        .addCase(singInUser.fulfilled.type, (state, action: PayloadAction<SingInUser>) => {
             state.loading = false;
             state.error = '';
             state.token = action.payload.token;
@@ -57,7 +62,7 @@ export const userSlice = createSlice({
         .addCase(singInUser.pending.type, (state) => {
             state.loading = true;
         })
-        .addCase(singInUser.rejected.type, (state, action: PayloadAction<any>) => {
+        .addCase(singInUser.rejected.type, (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.error = action.payload;
         })

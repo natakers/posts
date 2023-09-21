@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import notFound from './img/ic-notfound.svg';
 import { Link } from 'react-router-dom';
 import s from './styles.module.css';
@@ -19,7 +19,7 @@ export const NotFound = ( {children, title, buttonText = "На главную", 
 }
 
 interface NotFoundProps {
-	children?: any,
+	children?: ReactNode,
 	title: string,
 	buttonText: string,
 	buttonAction?: () => void,

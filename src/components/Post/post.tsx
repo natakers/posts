@@ -34,8 +34,7 @@ export const Post = () => {
     if (currentPost && currentPost._id !== '') {
       dispatch(getComments(currentPost._id))
     }
-    // eslint-disable-next-line
-  }, [currentPost]);
+  }, [currentPost, dispatch]);
 
   function handleDeleteClick(e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation();

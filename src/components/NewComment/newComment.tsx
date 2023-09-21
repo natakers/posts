@@ -12,6 +12,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { PostsState } from "redux/reducers/posts/postsSlice";
 import { postComment } from "redux/reducers/comments/comments_action_creators";
 import { useAppDispatch } from "hooks/useAppDispatch";
+import { toast } from "react-toastify";
 
 
 const NewComment = () => {
@@ -33,8 +34,12 @@ const NewComment = () => {
   const handleClickAdd = async () => {
     try {
       if (currentPost) {
-        dispatch(postComment({id: currentPost._id, text: comment}))
-        setComment('')
+        const resultAction = await dispatch(postComment({id: currentPost._id, text: comment}))
+        if (postComment.fulfilled.match(resultAction)) {
+          setComment('')
+        } else {
+          toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+        }
       }
     } catch (error) { alert(error); }
   }

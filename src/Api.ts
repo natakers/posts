@@ -75,7 +75,7 @@ class Api {
   }
 
   setUserInfo({ name, about }: {name: string, about: string}) {
-    return axios.patch(`${this._baseUrl}/users/me`, 
+    return axios.patch(`${this._baseUrl}/usersx/me`, 
     { name, about },
     {
       headers: {
@@ -87,7 +87,7 @@ class Api {
   }
 
   setUserAvatar(avatar: string) {
-    return axios.patch(`${this._baseUrl}/users/me/avatar`, 
+    return axios.patch(`${this._baseUrl}/usersx/me/avatar`, 
     {avatar},
     {
       headers: {

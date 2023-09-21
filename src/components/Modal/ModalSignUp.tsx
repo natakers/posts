@@ -7,6 +7,7 @@ import styles from "./modals.module.css";
 import { handleClose, handleOpen } from "redux/reducers/modal/modalSlice";
 import { singUpUser } from "redux/reducers/user/user_action_creators";
 import { useAppDispatch } from "hooks/useAppDispatch";
+import { toast } from "react-toastify";
 
 export interface UserSignUp {
   password: string;
@@ -25,14 +26,12 @@ const ModalSignUp = () => {
   const dispatch = useAppDispatch()
 
   const onSubmit = async (data: UserSignUp) => {
-    console.log(data);
-    try {
-      dispatch(singUpUser(data))
-      dispatch(handleOpen({type: "signIn"}));
-    } catch (error) {
-      alert(error);
-      dispatch(handleClose());
-    }
+    const resultAction = await dispatch(singUpUser(data))
+      if (singUpUser.fulfilled.match(resultAction)) {
+        dispatch(handleOpen({type: "signIn"}));
+      } else {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

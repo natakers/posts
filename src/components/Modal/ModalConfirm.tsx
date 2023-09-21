@@ -11,6 +11,7 @@ import { CommentsState } from "redux/reducers/comments/commentsSlice";
 import { deleteComment } from "redux/reducers/comments/comments_action_creators";
 import { ModalState, handleClose } from "redux/reducers/modal/modalSlice";
 import { deletePost } from "redux/reducers/posts/post_action_creators";
+import { toast } from "react-toastify";
 
 
 const ModalConfirm = () => {
@@ -23,16 +24,28 @@ const ModalConfirm = () => {
   let location = useLocation();
 
   const handleDeleteUser = () => {
-    if (currentUser) {dispatch(exitUser())
-    navigate('/login')}
+    if (currentUser) {
+      dispatch(exitUser())
+      navigate('/login')
+    }
   };
 
   const handlePostDelete = async () => {
-    if (currentPost) dispatch(deletePost(currentPost?._id))
+    if (currentPost) {
+      const resultAction = await dispatch(deletePost(currentPost?._id))
+      if (deletePost.rejected.match(resultAction)) {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
+    }
   };
 
-  const handleCommentDelete = () => {
-    if (currentPost && currentComment) dispatch(deleteComment({postID: currentPost._id, commentID: currentComment._id}))
+  const handleCommentDelete = async () => {
+    if (currentPost && currentComment) {
+      const resultAction = await dispatch(deleteComment({postID: currentPost._id, commentID: currentComment._id}))
+      if (deleteComment.rejected.match(resultAction)) {
+        toast.error((resultAction.payload as String), {position: toast.POSITION.TOP_CENTER})
+      }
+    }
   };
 
   function handleDel(e: React.MouseEvent<HTMLElement>) {

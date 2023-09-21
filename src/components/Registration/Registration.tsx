@@ -23,7 +23,7 @@ const Registration = memo(() => {
 
   useEffect(() => {
     if (token) navigate("/");
-  }, [token])
+  }, [navigate, token])
   
   return (
     <Box
